@@ -11,11 +11,11 @@ working call/messages/services
 
 |server.cfg|
 set mysql_connection_string "server=127.0.0.1;database=gta5_gamemode_essential;userid=root;password=1202"
-
+```
 start mysql-async
 start gcphone
 start vrp_addons_gcphone
-
+```
 Paste in the phone item in [vrp]\vrp\cfg\items.lua
 ```
 ["aphone"] = {"Mobil &#x1F4F1;", "Ring og send SMS'er.", nil, 0},
