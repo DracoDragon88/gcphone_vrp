@@ -1,7 +1,3 @@
---====================================================================================
--- #Author: Jonathan D @ Gannon --Convertida Vrpex FoxOak
---====================================================================================
-
 local myPedId = nil
 
 local phoneProp = 0
@@ -20,15 +16,16 @@ local ANIMS = {
 		['out'] = {
 			['text'] = 'cellphone_text_in',
 			['call'] = 'cellphone_call_listen_base',
-			
 		},
 		['text'] = {
 			['out'] = 'cellphone_text_out',
+			['text'] = 'cellphone_text_in',
 			['call'] = 'cellphone_text_to_call',
 		},
 		['call'] = {
 			['out'] = 'cellphone_call_out',
 			['text'] = 'cellphone_call_to_text',
+			['call'] = 'cellphone_text_to_call',
 		}
 	},
 	['anim@cellphone@in_car@ps'] = {
@@ -38,11 +35,13 @@ local ANIMS = {
 		},
 		['text'] = {
 			['out'] = 'cellphone_text_out',
+			['text'] = 'cellphone_text_in',
 			['call'] = 'cellphone_text_to_call',
 		},
 		['call'] = {
 			['out'] = 'cellphone_horizontal_exit',
 			['text'] = 'cellphone_call_to_text',
+			['call'] = 'cellphone_text_to_call',
 		}
 	}
 }
@@ -68,12 +67,12 @@ end
 --[[
 	out || text || Call ||
 --]]
-function PhonePlayAnim (status, freeze)
-	if currentStatus == status then
+function PhonePlayAnim (status, freeze, force)
+	if currentStatus == status and force ~= true then
 		return
 	end
-	myPedId = GetPlayerPed(-1)
 
+	myPedId = GetPlayerPed(-1)
 	local freeze = freeze or false
 
 	local dict = "cellphone@"
@@ -83,6 +82,7 @@ function PhonePlayAnim (status, freeze)
 	loadAnimDict(dict)
 
 	local anim = ANIMS[dict][currentStatus][status]
+	print('PhonePlayAnim', currentStatus, status, anim)
 	if currentStatus ~= 'out' then
 		StopAnimTask(myPedId, lastDict, lastAnim, 1.0)
 	end

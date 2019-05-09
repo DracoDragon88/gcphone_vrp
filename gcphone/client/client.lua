@@ -1,5 +1,5 @@
 --====================================================================================
--- #Author: Jonathan D @ Gannon --Convertida Vrpex FoxOak
+-- #Author: Jonathan D @ Gannon
 --====================================================================================
  
 -- Configuration
@@ -13,18 +13,64 @@ local KeyToucheCloseEvent = {
 }
 local KeyOpenClose = 289 -- F2
 local KeyTakeCall = 38 -- E
+local useAPhone = true -- true = check for phorne item, false = open phone with out
+
+--====================================================================================
+--  
+--====================================================================================
 local menuIsOpen = false
 local contacts = {}
 local messages = {}
 local myPhoneNumber = ''
 local isDead = false
 local USE_RTC = false
+local useMouse = false
+local ignoreFocus = false
+local takePhoto = false
+local lastFrameIsOpen = false
 
 local PhoneInCall = {}
 local currentPlaySound = false
 local soundId = 1485
 
+Citizen.CreateThread(function()
+  while true do
+    Citizen.Wait(0)
+    if takePhoto ~= true then
+      if IsControlJustPressed(1, KeyOpenClose) then
+        if menuIsOpen == false then
+          if useAPhone then
+            TriggerServerEvent('gcPhone:doIhaveAphone')
+          else
+            TooglePhone()
+          end
+        end
+      end
+      if menuIsOpen == true then
+        for _, value in ipairs(KeyToucheCloseEvent) do
+          if IsControlJustPressed(1, value.code) then
+            SendNUIMessage({keyUp = value.event})
+          end
+        end
+        local nuiFocus = useMouse and not ignoreFocus
+        SetNuiFocus(nuiFocus, nuiFocus)
+        lastFrameIsOpen = true
+      else
+        if lastFrameIsOpen == true then
+          SetNuiFocus(false, false)
+          lastFrameIsOpen = false
+        end
+      end
+    end
+  end
+end)
 
+RegisterNetEvent("gcPhone:OpenPhone")
+AddEventHandler("gcPhone:OpenPhone", function(_myPhoneNumber)
+  if menuIsOpen == false then
+    TooglePhone()
+  end
+end)
 
 --====================================================================================
 --  Active ou Deactive une application (appName => config.json)
@@ -74,7 +120,7 @@ function showFixePhoneHelper (coords)
       coords.x, coords.y, coords.z, 1)
     if dist <= 2.0 then
       SetTextComponentFormat("STRING")
-      AddTextComponentString("~g~" .. data.name .. ' ~o~' .. number .. '~n~~INPUT_PICKUP~~w~ Usar')
+      AddTextComponentString("~g~" .. data.name .. ' ~o~' .. number .. '~n~~INPUT_PICKUP~~w~ Use')
       DisplayHelpTextFromStringLabel(0, 0, 0, -1)
       if IsControlJustPressed(1, KeyTakeCall) then
         startFixeCall(number)
@@ -100,7 +146,7 @@ Citizen.CreateThread(function ()
           inRangeToActivePhone = true
           if (dist <= 1.5) then 
             SetTextComponentFormat("STRING")
-            AddTextComponentString("~INPUT_PICKUP~ Atender")
+            AddTextComponentString("~INPUT_PICKUP~ Detach")
             DisplayHelpTextFromStringLabel(0, 0, 1, -1)
             if IsControlJustPressed(1, KeyTakeCall) then
               PhonePlayCall(true)
@@ -115,11 +161,11 @@ Citizen.CreateThread(function ()
     if inRangeToActivePhone == false then
       showFixePhoneHelper(coords)
     end
-    if inRangeToActivePhone == true and currentPlaySound == true then
+    if inRangeToActivePhone == true and currentPlaySound == false then
       PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
-      currentPlaySound = false
-    elseif inRangeToActivePhone == false and currentPlaySound == true then
       currentPlaySound = true
+    elseif inRangeToActivePhone == false and currentPlaySound == true then
+      currentPlaySound = false
       StopSound(soundId)
     end
     Citizen.Wait(0)
@@ -138,26 +184,6 @@ end)
 
 
 
---====================================================================================
---  
---====================================================================================
-Citizen.CreateThread(function()
-  while true do
-    Citizen.Wait(0)
-    if IsControlJustPressed(1, KeyOpenClose) then
-      if menuIsOpen == false then
-        TriggerServerEvent('gcPhone:doIhaveAphone')
-      end
-    end
-    if menuIsOpen == true then
-      for _, value in ipairs(KeyToucheCloseEvent) do
-        if IsControlJustPressed(1, value.code) then
-          SendNUIMessage({keyUp = value.event})
-        end
-      end
-    end
-  end
-end)
 
 RegisterNetEvent("gcPhone:forceOpenPhone")
 AddEventHandler("gcPhone:forceOpenPhone", function(_myPhoneNumber)
@@ -196,13 +222,14 @@ RegisterNetEvent("gcPhone:receiveMessage")
 AddEventHandler("gcPhone:receiveMessage", function(message)
   -- SendNUIMessage({event = 'updateMessages', messages = messages})
   SendNUIMessage({event = 'newMessage', message = message})
+  table.insert(messages, message)
   if message.owner == 0 then
-    local text = '~o~Nova Mensagem'
+    local text = '~o~Ny besked'
     if ShowNumberNotification == true then
-      text = '~o~Nova Mensagem do ~y~'.. message.transmitter
+      text = '~o~New message from ~y~'.. message.transmitter
       for _,contact in pairs(contacts) do
         if contact.number == message.transmitter then
-          text = '~o~Nova Mensagem de ~g~'.. contact.display
+          text = '~o~New message from ~g~'.. contact.display
           break
         end
       end
@@ -276,13 +303,12 @@ end
 --====================================================================================
 --  Function client | Appels
 --====================================================================================
-local inCall = false
 local aminCall = false
+local inCall = false
 
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
   SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
-  print('---------------------', initiator)
   if initiator == true then
     PhonePlayCall()
     if menuIsOpen == false then
@@ -293,12 +319,10 @@ end)
 
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
-
   if inCall == false and USE_RTC == false then
     inCall = true
-    NetworkSetVoiceChannel(tonumber(infoCall.id + 1))
-    NetworkSetVoiceActive(true)
-    NetworkSetTalkerProximity(15000.0 + 0.0001)
+    NetworkSetVoiceChannel(infoCall.id + 1)
+    NetworkSetTalkerProximity(0.0)
   end
   if menuIsOpen == false then 
     TooglePhone()
@@ -312,7 +336,7 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
     Citizen.InvokeNative(0xE036A705F989E049)
-    NetworkSetTalkerProximity(5.5)
+    NetworkSetTalkerProximity(2.5)
   end
   PhonePlayText()
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
@@ -324,6 +348,14 @@ AddEventHandler("gcPhone:historiqueCall", function(historique)
   SendNUIMessage({event = 'historiqueCall', historique = historique})
 end)
 
+
+function startCall (phone_number, rtcOffer, extraData)
+  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
+end
+
+function acceptCall (infoCall, rtcAnswer)
+  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
+end
 
 function rejectCall(infoCall)
   TriggerServerEvent('gcPhone:rejectCall', infoCall)
@@ -349,18 +381,12 @@ end
 --====================================================================================
 --  Event NUI - Appels
 --====================================================================================
-function startCall (phone_number, rtcOffer, extraData)
-  TriggerServerEvent('gcPhone:startCall', phone_number, rtcOffer, extraData)
-end
+
 RegisterNUICallback('startCall', function (data, cb)
-  --print(json.encode(data))
   startCall(data.numero, data.rtcOffer, data.extraData)
   cb()
 end)
 
-function acceptCall (infoCall, rtcAnswer)
-  TriggerServerEvent('gcPhone:acceptCall', infoCall, rtcAnswer)
-end
 RegisterNUICallback('acceptCall', function (data, cb)
   acceptCall(data.infoCall, data.rtcAnswer)
   cb()
@@ -402,7 +428,6 @@ end)
 RegisterNetEvent('gcphone:autoCall')
 AddEventHandler('gcphone:autoCall', function(number, extraData)
   if number ~= nil then
-    print('number', number)
     SendNUIMessage({ event = "autoStartCall", number = number, extraData = extraData})
   end
 end)
@@ -552,13 +577,23 @@ RegisterNUICallback('setGPS', function(data, cb)
   SetNewWaypoint(tonumber(data.x), tonumber(data.y))
   cb()
 end)
+
+-- Add security for event (leuit#0100)
 RegisterNUICallback('callEvent', function(data, cb)
-  if data.data ~= nil then 
-    TriggerEvent(data.eventName, data.data)
+  local eventName = data.eventName or ''
+  if string.match(eventName, 'gcphone') then
+    if data.data ~= nil then 
+      TriggerEvent(data.eventName, data.data)
+    else
+      TriggerEvent(data.eventName)
+    end
   else
-    TriggerEvent(data.eventName)
+    print('Event not allowed')
   end
   cb()
+end)
+RegisterNUICallback('useMouse', function(um, cb)
+  useMouse = um
 end)
 RegisterNUICallback('deleteALL', function(data, cb)
   TriggerServerEvent('gcPhone:deleteALL')
@@ -576,7 +611,7 @@ function TooglePhone()
     PhonePlayOut()
   end
 end
-RegisterNUICallback('takePhoto', function(data, cb)
+RegisterNUICallback('faketakePhoto', function(data, cb)
   menuIsOpen = false
   SendNUIMessage({show = false})
   cb()
@@ -617,3 +652,61 @@ AddEventHandler('onClientResourceStart', function(res)
 end)
 
 
+RegisterNUICallback('setIgnoreFocus', function (data, cb)
+  ignoreFocus = data.ignoreFocus
+  cb()
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RegisterNUICallback('takePhoto', function(data, cb)
+	CreateMobilePhone(1)
+  CellCamActivate(true, true)
+  print(json.encode(data))
+  takePhoto = true
+	while takePhoto do
+    Citizen.Wait(0)
+    SetNuiFocus(false, false)
+
+		if IsControlJustPressed(1, 27) then -- Toogle Mode
+			frontCam = not frontCam
+			CellFrontCamActivate(frontCam)
+    elseif IsControlJustPressed(1, 177) then -- CANCEL
+      DestroyMobilePhone()
+      CellCamActivate(false, false)
+      cb(json.encode({ url = nil }))
+      takePhoto = false
+      break
+    elseif IsControlJustPressed(1, 176) then -- TAKE.. PIC
+			exports['screenshot-basic']:requestScreenshotUpload(data.url, data.field, function(data)
+        local resp = json.decode(data)
+        DestroyMobilePhone()
+        CellCamActivate(false, false)
+        print(json.encode(resp))
+        cb(json.encode({ url = resp.files[1].url }))
+        
+      end)
+      takePhoto = false
+		end
+		HideHudComponentThisFrame(7)
+		HideHudComponentThisFrame(8)
+		HideHudComponentThisFrame(9)
+		HideHudComponentThisFrame(6)
+		HideHudComponentThisFrame(19)
+    HideHudAndRadarThisFrame()
+  end
+  Citizen.Wait(1000)
+  PhonePlayAnim('text', false, true)
+end)

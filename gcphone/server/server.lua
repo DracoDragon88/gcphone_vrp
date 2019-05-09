@@ -8,7 +8,7 @@ RegisterServerEvent('gcPhone:doIhaveAphone')
 AddEventHandler('gcPhone:doIhaveAphone', function()
     local user_id = vRP.getUserId({source})
     if vRP.getInventoryItemAmount({user_id,"aphone"}) > 0 then
-        TriggerClientEvent('gcPhone:forceOpenPhone',source)
+        TriggerClientEvent('gcPhone:OpenPhone',source)
     else
         vRPclient.notify(source,{"Ingen Mobil"})
     end
@@ -16,7 +16,7 @@ end)
 
 --====================================================================================
 -- #Author: Jonathan D @Gannon
--- #Version 2.0 --Convertida Vrpex FoxOak
+-- #Version 2.0
 --====================================================================================
 
 math.randomseed(os.time()) 
@@ -31,7 +31,6 @@ end
 --====================================================================================
 function getSourceFromIdentifier(identifier, cb)
     return vRP.getUserSource({identifier})
-
 end
 function getNumberPhone(identifier)
     local result = MySQL.Sync.fetchAll("SELECT vrp_user_identities.phone FROM vrp_user_identities WHERE vrp_user_identities.user_id = @identifier", {
@@ -53,11 +52,10 @@ function getIdentifierByPhoneNumber(phone_number)
 end
 
 
-function getPlayerID(source)    
-    local player = vRP.getUserId({source})  
+function getPlayerID(source)
+    local player = vRP.getUserId({source})
     return player
 end
-
 function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
@@ -173,7 +171,7 @@ end)
 
 function _internalAddMessage(transmitter, receiver, message, owner)
     local Query = "INSERT INTO phone_messages (`transmitter`, `receiver`,`message`, `isRead`,`owner`) VALUES(@transmitter, @receiver, @message, @isRead, @owner);"
-    local Query2 = 'SELECT * from phone_messages WHERE `id` = (SELECT LAST_INSERT_ID());'
+    local Query2 = 'SELECT * from phone_messages WHERE `id` = @id;'
 	local Parameters = {
         ['@transmitter'] = transmitter,
         ['@receiver'] = receiver,
@@ -181,7 +179,10 @@ function _internalAddMessage(transmitter, receiver, message, owner)
         ['@isRead'] = owner,
         ['@owner'] = owner
     }
-	return MySQL.Sync.fetchAll(Query .. Query2, Parameters)[1]
+    local id = MySQL.Sync.insert(Query, Parameters)
+    return MySQL.Sync.fetchAll(Query2, {
+        ['@id'] = id
+    })[1]
 end
 
 function addMessage(source, identifier, phone_number, message)
@@ -190,12 +191,7 @@ function addMessage(source, identifier, phone_number, message)
     local myPhone = getNumberPhone(identifier)
     if otherIdentifier ~= nil and vRP.getUserSource({otherIdentifier}) ~= nil then 
         local tomess = _internalAddMessage(myPhone, phone_number, message, 0)
---        getSourceFromIdentifier(otherIdentifier, function (osou)
-  --          if tonumber(osou) ~= nil then 
-                -- TriggerClientEvent("gcPhone:allMessage", osou, getMessages(otherIdentifier))
-                TriggerClientEvent("gcPhone:receiveMessage", tonumber(vRP.getUserSource({otherIdentifier})), tomess)
-    --        end
-    --    end) 
+        TriggerClientEvent("gcPhone:receiveMessage", tonumber(vRP.getUserSource({otherIdentifier})), tomess)
     end
     local memess = _internalAddMessage(phone_number, myPhone, message, 1)
     TriggerClientEvent("gcPhone:receiveMessage", sourcePlayer, memess)
@@ -258,7 +254,6 @@ end)
 
 RegisterServerEvent('gcPhone:setReadMessageNumber')
 AddEventHandler('gcPhone:setReadMessageNumber', function(num)
-    local sourcePlayer = tonumber(source)  
     local identifier = getPlayerID(source)
     setReadMessageNumber(identifier, num)
 end)
@@ -273,6 +268,16 @@ AddEventHandler('gcPhone:deleteALL', function()
     TriggerClientEvent("gcPhone:contactList", sourcePlayer, {})
     TriggerClientEvent("gcPhone:allMessage", sourcePlayer, {})
     TriggerClientEvent("appelsDeleteAllHistorique", sourcePlayer, {})
+end)
+
+AddEventHandler('gcPhone:deleteALLvRPIdentity', function(src,user_id,num)
+    deleteAllMessage(user_id)
+    deleteAllContact(user_id)
+    appelsDeleteAllHistorique(user_id)
+    TriggerClientEvent("gcPhone:contactList", src, {})
+    TriggerClientEvent("gcPhone:allMessage", src, {})
+    TriggerClientEvent("appelsDeleteAllHistorique", src, {})
+    TriggerClientEvent("gcPhone:myPhoneNumber", src, num) -- update phonenumber
 end)
 
 --====================================================================================
@@ -361,7 +366,7 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     local srcIdentifier = getPlayerID(source)
 
     local srcPhone = ''
-   -- print(json.encode(extraData))
+    print(json.encode(extraData))
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
@@ -385,17 +390,17 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     
 
     if is_valid == true then
-        --getSourceFromIdentifier(destPlayer, function (srcTo)
+        -- getSourceFromIdentifier(destPlayer, function (srcTo)
         if vRP.getUserSource({destPlayer}) ~= nil then
             srcTo = tonumber(vRP.getUserSource({destPlayer}))
 
             if srcTo ~= nil then
                 AppelsEnCours[indexCall].receiver_src = srcTo
-                --TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
+                -- TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
                 TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
                 TriggerClientEvent('gcPhone:waitingCall', srcTo, AppelsEnCours[indexCall], false)
             else
-                --TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
+                -- TriggerEvent('gcPhone:addCall', AppelsEnCours[indexCall])
                 TriggerClientEvent('gcPhone:waitingCall', sourcePlayer, AppelsEnCours[indexCall], true)
             end
         end
@@ -413,14 +418,14 @@ end)
 
 RegisterServerEvent('gcPhone:candidates')
 AddEventHandler('gcPhone:candidates', function (callId, candidates)
-    --print('send cadidate', callId, candidates)
+    -- print('send cadidate', callId, candidates)
     if AppelsEnCours[callId] ~= nil then
         local source = source
         local to = AppelsEnCours[callId].transmitter_src
         if source == to then 
             to = AppelsEnCours[callId].receiver_src
         end
-        --print('TO', to)
+        -- print('TO', to)
         TriggerClientEvent('gcPhone:candidates', to, candidates)
     end
 end)
