@@ -5,12 +5,10 @@ All credits to OP @N3MTV and Gannon
 
 Original git
 https://github.com/N3MTV/gcphone
-FiveM MySql-Async
+FiveM MySql-Async 3.0.8
 https://github.com/brouznouf/fivem-mysql-async
 
-Call,SMS,Bank,9GAG,Tweeter
-
-working call/messages/services
+working call/messages/services/9GAG/Tweeter
 
 server.cfg
 ```
