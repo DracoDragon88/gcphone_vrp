@@ -263,6 +263,9 @@
       "routeName": "9gag"
     }
   ],
+
+  "defaultLanguage": "da_DK",
+  
   "language": {
 
     "da_DK": {
@@ -292,6 +295,7 @@
       "APP_PHONE_NUMBER_HIDDEN": "Hemlig nummer",
       "APP_PHONE_NUMBER_UNKNOWN": "Ukendt",
       "APP_PHONE_CALL_IGNORE": "Ignorer",
+      "APP_PHONE_CALL_ANONYMOUS": "Ring Anonymt",
       "APP_BANK_TITLE": "Bank",
       "APP_BOURSE_TITLE": "Børs",
       "APP_CONTACT_TITLE": "Kontaktoplysninger",
@@ -507,6 +511,10 @@
       "APP_PHONE_NUMBER_HIDDEN": "Hidden",
       "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
       "APP_PHONE_CALL_IGNORE": "Ignore",
+      "APP_PHONE_NUMBER_HIDDEN": "Hidden",
+      "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
+      "APP_PHONE_CALL_IGNORE": "Ignore",
+      "APP_PHONE_CALL_ANONYMOUS": "Call Anonymous",
       "APP_BANK_TITLE": "bench",
       "APP_BOURSE_TITLE": "stock exchange",
       "APP_CONTACT_TITLE": "contact details",
