@@ -20,20 +20,24 @@ end
 
 RegisterServerEvent('vrp_addons_gcphone:startCall')
 AddEventHandler('vrp_addons_gcphone:startCall', function (number, message, coords)
-	local user_id = vRP.getUserId({source})
-	local player = vRP.getUserSource({user_id})
-	vRPclient.notify(player,{"Anmoder om "..number})
+	startCall(source, number, message, coords)
+end)
+
+function startCall(src, number, message, coords)
 	if not useSMSService or PhoneNumbers[number] == nil then
-		vRP.sendServiceAlert({player, number,coords.x,coords.y,coords.z,message})
+		vRP.sendServiceAlert({src, number,coords.x,coords.y,coords.z,message})
 	else
 		local serviceGroup = vRP.getUsersByPermission({PhoneNumbers[number]})
-		getPhoneNumber(player, function(n)
+		getPhoneNumber(src, function(n)
 			if n ~= nil then
 				sendServiceSMS(number, {sender=n,message=message,coords={x=coords.x,y=coords.y,z=coords.z}}, serviceGroup)
+				TriggerEvent('gcPhone:_internalAddMessage', number, n, message, 1, function(smsMess)
+					TriggerClientEvent("gcPhone:receiveMessage", src, smsMess)
+				end)
 			end
 		end)
 	end
-end)
+end
 
 function getPhoneNumber(source, callback) 
 local user_id = vRP.getUserId({source})
