@@ -3,8 +3,8 @@ client_script {
 }
 
 server_script {
-	'@vrp/lib/utils.lua',
 	'@mysql-async/lib/MySQL.lua',
+	'@vrp/lib/utils.lua',
 	"server.lua"
 }
 

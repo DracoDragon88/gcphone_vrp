@@ -1,7 +1,8 @@
 {
-  "reseau": "Tele Dragon",
+  "reseau": "TeleDragon",
   "warningMessageCount": 250,
-  "themeColor": "#303f9f",
+  "themeColor": "#007aff",
+  "themeColorTitle": "#f7f7f7",
   "colors": [
     "#EF5350",
     "#EC407A",
@@ -27,9 +28,9 @@
   "useWebRTCVocal": false,
   "RTCConfig": {
     "iceServers": [{
-      "urls": ["turn:gannon.ovh"],
-      "username": "jojo",
-      "credential": "pass"
+      "urls": ["turn:trun.draconet.net"],
+      "username": "gcphone",
+      "credential": "gcphone"
     }]
   },
 
@@ -38,112 +39,104 @@
   "fileUploadService_Url": "https://wew.wtf/upload.php",
   "fileUploadService_Field": "files[]",
 
-  "background" : {
-    "Calvin & Hobbes": "back001.jpg",
-    "Destiny": "back002.jpg",
-    "Stormtrooper": "back003.jpg",
+  "background": {
+    "White desert": "back001.jpg",
+    "Palms": "back002.jpg",
+    "Santa Monica": "back003.jpg",
+
+    "Rute 66": "color.jpg",
+    "Tokyo by Night": "humo.jpg",
+    "Dark Planet": "iluminacion.jpg",
+
+    "AstroNeon": "neon.jpg",
+    "Blue Planet": "oscuridad.jpg",
+    "Wild beach": "playa.jpg",
+    "Winter landscape": "paisajes.jpg",
+    "Tokio": "tokio.jpg",
     "Custom URL": "URL"
   },
   "background_default": {
-    "label": "Calvin & Hobbes",
-    "value": "back001.jpg"
+    "label": "Santa Monica",
+    "value": "back003.jpg"
   },
-
 
   "coque": {
+    "Gray case": "silicona_gris.png",
+    "Salmon cover": "silicona_salmon.png",
+    "Red case": "silicona_amarilla.png",
+    "Mint cover": "menta.png",
+    "Sky cover": "cielo.png",
     "Sansumg S8": "s8.png",
-    "Iphone X": "iphonex.png",
-    "Brick Base": "base.png",
-    "Transparent": "transparent.png"
+    "Sansumg S8n": "sin_funda.png",
+    "Iphone X": "iphonex.png"
   },
+
+  "sonido": {
+    "Astronomia": "ring.ogg",
+    "Safaera": "safaera.ogg",
+    "Bella Ciao": "bella_ciao.ogg",
+    "Casa Papel": "casa_papel.ogg",
+    "Iphone 11": "iphone_11.ogg",
+    "Tusa": "tusa.ogg",
+    "XXXTentacion": "xtentacion.ogg"
+  },
+
   "coque_default": {
     "label": "Sansumg S8",
     "value": "s8.png"
   },
 
+  "sonido_default": {
+    "label": "Casa Papel",
+    "value": "casa_papel.ogg"
+  },
 
-  "serviceCall": [
-    {
-      "display": "Politi",
-      "icon": "/html/static/img/icons_app/politi.png",
-      "subMenu": [
-        {
+
+  "serviceCall": [{
+      "display": "Police",
+      "icon": "/html/static/img/icons_app/policia.png",
+      "subMenu": [{
           "title": "Send en besked",
           "eventName": "vrp_addons_gcphone:call",
           "type": {
-            "number": "Politi"
+            "number": "police"
+          }
+        },
+        {
+          "title": "Call to emergency",
+          "eventName": "gcphone:autoCallNumber",
+          "type": {
+            "number": "911"
           }
         }
       ]
     },
     {
       "display": "Ambulance",
-      "icon": "/html/static/img/icons_app/ems.png",
-      "subMenu": [
-        {
-          "title": "Send en besked",
-          "eventName": "vrp_addons_gcphone:call",
-          "type": {
-            "number": "Falck"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Advokat",
-      "backgroundColor": "green",
-      "subMenu": [
-        {
-          "title": "Send en besked",
-          "eventName": "vrp_addons_gcphone:call",
-          "type": {
-            "number": "Advokat"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Mekaniker",
-      "icon": "/html/static/img/icons_app/mechanic.png",
-      "subMenu": [
-        {
-          "title": "Send en besked",
-          "eventName": "vrp_addons_gcphone:call",
-          "type": {
-            "number": "Mekaniker"
-          }
-        }
-      ]
-    },
-    {
-      "display": "Nyhederne",
       "backgroundColor": "red",
-      "subMenu": [
-        {
-          "title": "Send en besked",
-          "eventName": "vrp_addons_gcphone:call",
-          "type": {
-            "number": "Nyhederne"
-          }
+      "icon": "/html/static/img/icons_app/lsfd.png",
+      "subMenu": [{
+        "title": "Send a message",
+        "eventName": "vrp_addons_gcphone:call",
+        "type": {
+          "number": "ambulance"
         }
-      ]
-    },
-    {
-      "display": "Taxa",
-      "icon": "/html/static/img/icons_app/taxi.png",
-      "subMenu": [
-        {
-          "title": "Ring efter en Taxa",
-          "eventName": "vrp_addons_gcphone:call",
-          "type": {
-            "number": "Taxa"
-          }
-        }
-      ]
+      }]
     }
   ],
 
-  "defaultContacts": [],
+  "defaultContacts": [{
+      "number": "ambulance",
+      "display": "Ambulancia",
+      "icon": "/html/static/img/icons_app/lsfd.png"
+    },
+    {
+      "number": "police",
+      "display": "Policía",
+      "backgroundColor": "blue",
+      "icon": "/html/static/img/icons_app/policia.png"
+    }
+  ],
 
   "apps": [{
       "name": "Twitter",
@@ -155,20 +148,35 @@
       "es_ES__name": "Twitter",
       "icons": "/html/static/img/icons_app/twitter.png",
       "routeName": "twitter.splash",
-      "inHomePage": true
+      "inHomePage": false
     },
     {
-      "name": "Mobilphone",
+      "name": "Phone",
       "da_DK__name": "Telefon",
       "fr_FR__name": "Téléphone",
       "cs_CZ__name": "Telefon",
       "en_US__name": "Phone",
       "de_DE__name": "Telefon",
       "pl_PL__name": "Telefon",
-      "es_ES__name": "llamar",
+      "es_ES__name": "Teléfono",
       "icons": "/html/static/img/icons_app/call.png",
       "routeName": "appels",
       "inHomePage": true
+    },
+   
+    
+    {
+      "name": "Contacts",
+      "da_DK__name": "Kontakter",
+      "fr_FR__name": "Contacts",
+      "en_US__name": "Contacts",
+      "cs_CZ__name": "Kontakty",
+      "de_DE__name": "Kontakte",
+      "pl_PL__name": "Kontakty",
+      "es_ES__name": "Contactos",
+      "icons": "/html/static/img/icons_app/contacts.png",
+      "routeName": "contacts",
+      "inHomePage": false
     },
     {
       "name": "Messages",
@@ -185,19 +193,6 @@
       "puceRef": "nbMessagesUnread"
     },
     {
-      "name": "Contacts",
-      "da_DK__name": "Kontakter",
-      "fr_FR__name": "Contacts",
-      "en_US__name": "Contacts",
-      "cs_CZ__name": "Kontakty",
-      "de_DE__name": "Kontakte",
-      "pl_PL__name": "Kontakty",
-      "es_ES__name": "Contactos",
-      "icons": "/html/static/img/icons_app/contacts.png",
-      "routeName": "contacts",
-      "inHomePage": true
-    },
-    {
       "name": "Settings",
       "da_DK__name": "Indsitllinger",
       "fr_FR__name": "Paramètres",
@@ -210,16 +205,17 @@
       "routeName": "parametre",
       "inHomePage": false
     },
+    
     {
       "name": "Bank",
       "da_DK__name": "Bank",
-      "fr_FR__name": "Banque",
-      "en_US__name": "Bankmanager",
-      "cs_CZ__name": "Banka",
-      "de_DE__name": "Bank",
-      "pl_PL__name": "Lawka",
-      "es_ES__name": "Banquillo",
-      "icons": "/html/static/img/icons_app/bank.png",
+      "fr_FR__name": "Wallet",
+      "en_US__name": "Wallet",
+      "cs_CZ__name": "Wallet",
+      "de_DE__name": "Wallet",
+      "pl_PL__name": "Wallet",
+      "es_ES__name": "Wallet",
+      "icons": "/html/static/img/icons_app/banco.png",
       "routeName": "bank",
       "inHomePage": false
     },
@@ -230,7 +226,8 @@
       "cs_CZ__name": "Burza",
       "en_US__name": "Stock Market",
       "de_DE__name": "Börse",
-      "icons": "/html/static/img/icons_app/bourse.png",
+      "es_ES__name": "Bolsa",
+      "icons": "/html/static/img/icons_app/bourse1.png",
       "routeName": "bourse",
       "enabled": true
     },
@@ -247,15 +244,27 @@
       "routeName": "photo"
     },
     {
-      "name": "Dark Chat",
-      "da_DK__name": "Dark Chat",
-      "fr_FR__name": "Dark Chat",
-      "en_US__name": "Dark Chat",
-      "de_DE__name": "Dark Net",
-      "pl_PL__name": "Czat czarny",
-      "es_ES__name": "Chat Oscuro",
-      "icons": "/html/static/img/icons_app/tchat.png",
+      "name": "Reddit",
+      "da_DK__name": "Reddit",
+      "fr_FR__name": "Reddit",
+      "en_US__name": "Reddit",
+      "de_DE__name": "Reddit",
+      "pl_PL__name": "Reddit",
+      "es_ES__name": "Reddit",
+      "icons": "/html/static/img/icons_app/reddit.png",
       "routeName": "tchat"
+    },
+    {
+      "name": "Notes",
+      "da_DK__name": "Notes ",
+      "fr_FR__name": "Notes ",
+      "en_US__name": "Notes ",
+      "de_DE__name": "Notes ",
+      "pl_PL__name": "Notes ",
+      "es_ES__name": "Notas ",
+      "routeName": "notes",
+      "icons": "/html/static/img/icons_app/notes.png"
+      
     },
     {
       "name": "9GAG",
@@ -263,11 +272,8 @@
       "routeName": "9gag"
     }
   ],
-
-  "defaultLanguage": "da_DK",
-  
+  "defaultLanguage": "en_US",
   "language": {
-
     "da_DK": {
       "NAME": "Dansk",
       "PHONE_WARNING_MESSAGE": "Hukommelse",
@@ -278,6 +284,7 @@
       "APP_CONFIG_MY_MUNBER": "Mit nummer",
       "APP_CONFIG_WALLPAPER": "Baggrund",
       "APP_CONFIG_CASE": "Telefon model",
+      "APP_CONFIG_SOUND": "Ringtone",
       "APP_CONFIG_ZOOM": "Zoom",
       "APP_CONFIG_VOLUME": "Lydstyrke",
       "APP_CONFIG_LANGUAGE": "Sprog",
@@ -374,7 +381,7 @@
         ["%s år siden", "%s år siden"]
       ]
     },
-     "fr_FR": {
+    "fr_FR": {
       "NAME": "Français",
       "PHONE_WARNING_MESSAGE": "Saturation mémoires !",
       "PHONE_WARNING_MESSAGE_MESS": "messages",
@@ -384,6 +391,7 @@
       "APP_CONFIG_MY_MUNBER": "Mon numéro",
       "APP_CONFIG_WALLPAPER": "Fond d'écran",
       "APP_CONFIG_CASE": "Coque téléhone",
+      "APP_CONFIG_SOUND": "Téléphone",
       "APP_CONFIG_ZOOM": "Zoom",
       "APP_CONFIG_VOLUME": "Volume",
       "APP_CONFIG_LANGUAGE": "Langue",
@@ -391,6 +399,7 @@
       "APP_CONFIG_RESET": "Formater",
       "APP_CONFIG_RESET_CONFIRM": "TOUT SUPPRIMER",
       "APP_PHONE_CALL": "Appeler",
+      "APP_PHONE_CALL_ANONYMOUS": "Appeler en anomyne",
       "APP_PHONE_DELETE": "Effacer",
       "APP_PHONE_DELETE_ALL": "Effacer TOUT.",
       "APP_PHONE_TITLE": "Téléphone",
@@ -472,6 +481,7 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Les mots de passe ne corresponde pas",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Mot de passe trop court",
 
+
       "TIMEAGO": [
         "à l'instant",
         ["il y a %s seconde", "il y a %s secondes"],
@@ -494,6 +504,7 @@
       "APP_CONFIG_MY_MUNBER": "My number",
       "APP_CONFIG_WALLPAPER": "wallpaper",
       "APP_CONFIG_CASE": "telephone cover",
+      "APP_CONFIG_SOUND": "Ringtone",
       "APP_CONFIG_ZOOM": "zoom",
       "APP_CONFIG_VOLUME": "volume",
       "APP_CONFIG_LANGUAGE": "Language",
@@ -537,7 +548,7 @@
       "APP_MESSAGE_CONTACT_TITLE": "contacts",
       "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Enter a number",
       "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Send a message",
-      "APP_DARKTCHAT_TITLE": "Dark Chat",
+      "APP_DARKTCHAT_TITLE": "Reddit",
       "APP_DARKTCHAT_NEW_CHANNEL": "Add a channel",
       "APP_DARKTCHAT_DELETE_CHANNEL": "Delete the channel",
       "APP_DARKTCHAT_CANCEL": "abort",
@@ -603,6 +614,7 @@
       "APP_CONFIG_MY_MUNBER": "Meine Nummer",
       "APP_CONFIG_WALLPAPER": "Hintergrundbild",
       "APP_CONFIG_CASE": "Telefontyp",
+      "APP_CONFIG_SOUND": "Call Tone",
       "APP_CONFIG_ZOOM": "Grösse",
       "APP_CONFIG_VOLUME": "Lautstärke",
       "APP_CONFIG_LANGUAGE": "Sprache",
@@ -710,7 +722,9 @@
       "APP_CONFIG_TITLE": "parametr",
       "APP_CONFIG_MY_MUNBER": "Mój numer",
       "APP_CONFIG_WALLPAPER": "tapeta",
+      "APP_CONFIG_MOUSE_SUPPORT": "Controle souris",
       "APP_CONFIG_CASE": "Pokrywa telefoniczna",
+      "APP_CONFIG_SOUND": "Wezwanie Tonu",
       "APP_CONFIG_ZOOM": "przybliżanie",
       "APP_CONFIG_VOLUME": "objętość",
       "APP_CONFIG_LANGUAGE": "Język",
@@ -807,62 +821,69 @@
       "PHONE_WARNING_MESSAGE": "recuerdo",
       "PHONE_WARNING_MESSAGE_MESS": "noticias",
       "CONFIRM": "Aceptar",
-      "CANCEL": "interrumpir",
-      "APP_CONFIG_TITLE": "paramétrico",
+      "CANCEL": "Cancelar",
+      "APP_CONFIG_TITLE": "Ajustes",
       "APP_CONFIG_MY_MUNBER": "Mi número",
-      "APP_CONFIG_WALLPAPER": "empapelado",
-      "APP_CONFIG_CASE": "cobertura telefónica",
-      "APP_CONFIG_ZOOM": "acercamiento",
-      "APP_CONFIG_VOLUME": "envergadura",
+      "APP_CONFIG_WALLPAPER": "Fondo pantalla",
+      "APP_CONFIG_CASE": "Funda",
+      "APP_CONFIG_SOUND": "Tono de llamada",
+      "APP_CONFIG_MOUSE_SUPPORT": "Control",
+      "APP_CONFIG_ZOOM": "Zoom",
+      "APP_CONFIG_VOLUME": "Volumen",
       "APP_CONFIG_LANGUAGE": "Idioma",
-      "APP_CONFIG_RESET": "modelo",
-      "APP_CONFIG_RESET_CONFIRM": "BORRAR TODO",
-      "APP_PHONE_CALL": "gritar",
+      "APP_CONFIG_RESET": "Formatear",
+      "APP_CONFIG_RESET_CONFIRM": "Borrar todo",
+      "APP_PHONE_CALL": "Llamar",
+      "APP_PHONE_CALL_ANONYMOUS": "Llamada Anonima",
       "APP_PHONE_DELETE": "Borrar",
       "APP_PHONE_DELETE_ALL": "Borrar todo.",
-      "APP_PHONE_TITLE": "Número de teléfono",
+      "APP_PHONE_TITLE": "Contactos",
       "APP_PHONE_MENU_FAVORITES": "preferidos",
-      "APP_PHONE_MENU_RECENTS": "Lo más nuevo",
-      "APP_PHONE_MENU_CONTACTS": "contactos",
+      "APP_PHONE_MENU_RECENTS": "Recientes",
+      "APP_PHONE_MENU_CONTACTS": "Contactos",
       "APP_PHONE_ENTER_NUMBER": "Introduzca un número",
-      "APP_BANK_TITLE": "banquillo",
-      "APP_BOURSE_TITLE": "bolsa de valores",
-      "APP_CONTACT_TITLE": "datos de contacto",
+      "APP_BANK_TITLE": "Wallet",
+      "APP_BOURSE_TITLE": "Bolsa de valores",
+      "APP_CONTACT_TITLE": "Contactos",
       "APP_CONTACT_NEW": "Nuevo contacto",
       "APP_CONTACT_EDIT": "Cambiar el contacto",
-      "APP_CONTACT_SAVE": "matriculación",
-      "APP_CONTACT_CANCEL": "interrumpir",
+      "APP_CONTACT_SAVE": "Guardar",
+      "APP_CONTACT_CANCEL": "Cancelar",
       "APP_CONTACT_DELETE": "Borrar",
-      "APP_CONTACT_LABEL_NAME": "Nombre - Apellido",
-      "APP_CONTACT_LABEL_NUMBER": "número",
-      "APP_MESSAGE_TITLE": "noticias",
+      "APP_CONTACT_LABEL_NAME": "Nombre",
+      "APP_CONTACT_LABEL_NUMBER": "Número",
+      "APP_MESSAGE_TITLE": "Chats",
+      "APP_MESSAGE_TITLE_EDIT": "Editar",
+      "APP_MESSAGE_TITLE_DELETE": "Borrar",
       "APP_MESSAGE_NEW_MESSAGE": "Nuevo Mensaje",
       "APP_MESSAGE_ERASE_CONVERSATION": "Borrar la llamada",
       "APP_MESSAGE_ERASE_ALL_CONVERSATIONS": "Borrar todos los conv.",
-      "APP_MESSAGE_SEND_GPS": "Enviar acoplamiento GPS",
-      "APP_MESSAGE_SET_GPS": "posición GPS",
+      "APP_MESSAGE_SEND_GPS": "Enviar ubicación",
+      "APP_MESSAGE_SET_GPS": "Ubicación",
       "APP_MESSAGE_ZOOM_IMG": "Ampliar",
       "APP_MESSAGE_DELETE": "Borrar",
       "APP_MESSAGE_SMS": "mensaje de texto",
-      "APP_MESSAGE_CONTACT_TITLE": "contactos",
+      "APP_MESSAGE_CONTACT_TITLE": "Contactos",
       "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Introduzca un número",
       "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Enviar un mensaje",
-      "APP_DARKTCHAT_TITLE": "Chat Oscuro",
+      "APP_DARKTCHAT_TITLE": "Reddit",
       "APP_DARKTCHAT_NEW_CHANNEL": "Añadir un canal",
       "APP_DARKTCHAT_DELETE_CHANNEL": "Borrar el canal",
-      "APP_DARKTCHAT_CANCEL": "interrumpir",
+      "APP_DARKTCHAT_NEW_NOTE": "Añadir un nota",
+      "APP_DARKTCHAT_DELETE_NOTE": "Borrar la nota",
+      "APP_DARKTCHAT_CANCEL": "Cancelar",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Escriba un mensaje",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "mejores tweets",
       "APP_TWITTER_VIEW_TWEETER": "tweets",
-      "APP_TWITTER_VIEW_SETTING": "paramétrico",
+      "APP_TWITTER_VIEW_SETTING": "Ajustes",
       "APP_TWITTER_NEW_ACCOUNT_USERNAME": "Nombre de usuario (>= 4)",
       "APP_TWITTER_NEW_ACCOUNT_PASSWORD": "Contraseña (>= 6)",
       "APP_TWITTER_NEW_ACCOUNT_PASSWORD_CONFIRM": "Confirmar contraseña",
       "APP_TWITTER_NEW_ACCOUNT_AVATAR": "URL de tu avatar",
       "APP_TWITTER_PLACEHOLDER_MESSAGE": "¿Qué es lo que te pasa?",
-      "APP_TWITTER_BUTTON_ACTION_TWEETER": "Tweeter",
+      "APP_TWITTER_BUTTON_ACTION_TWEETER": "Twitter",
       "APP_TWITTER_ACCOUNT_LOGIN": "Iniciar sesión en el sitio web",
       "APP_TWITTER_ACCOUNT_LOGOUT": "Desconectar de la ubicación",
       "APP_TWITTER_ACCOUNT_PARAM": "Mi cuenta",
@@ -870,11 +891,12 @@
       "APP_TWITTER_ACCOUNT_CHANGE_PASSWORD": "Cambiar contraseña",
       "APP_TWITTER_ACCOUNT_NEW": "Nueva cuenta",
       "APP_TWIITER_ACCOUNT_SAVE": "matriculación",
+      "APP_MESSAGE_SEND_PHOTO": "Enviar foto",
       "APP_TWIITER_ACCOUNT_CREATE": "Crear la cuenta",
       "APP_TWIITER_ACCOUNT_CANCEL": "interrumpir",
       "APP_TWITTER_ACCOUNT_USERNAME": "nombre de usuario",
       "APP_TWITTER_ACCOUNT_PASSWORD": "contraseña",
-      "APP_TWITTER_NOTIFICATION": "comunicación",
+      "APP_TWITTER_NOTIFICATION": "Ajustes",
       "APP_TWITTER_NOTIFICATION_WHEN": "Para ser notificado",
       "APP_TWITTER_NOTIFICATION_ALL": "Todas las noticias",
       "APP_TWITTER_NOTIFICATION_MENTION": "Sólo mencione",
@@ -891,6 +913,8 @@
       "APP_TWITTER_NOTIF_NEW_PASSWORD_ERROR": "Oops...... Su contraseña no se ha podido cambiar.",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_MISS_MATCH": "Las contraseñas no coinciden",
       "APP_TWITTER_NOTIF_NEW_PASSWORD_LENGTH_ERROR": "Contraseña demasiado corta",
+      "APP_PHONE_NUMBER_HIDDEN": "Número oculto",
+      "APP_PHONE_NUMBER_UNKNOWN": "Número desconocido",
 
       "TIMEAGO": [
         "ahora",
@@ -913,6 +937,7 @@
       "APP_CONFIG_MY_MUNBER": "Mé číslo",
       "APP_CONFIG_WALLPAPER": "tapeta",
       "APP_CONFIG_CASE": "kryt telefonu",
+      "APP_CONFIG_SOUND": "vyzváněcí tón",
       "APP_CONFIG_ZOOM": "přiblížení",
       "APP_CONFIG_VOLUME": "hlasitost",
       "APP_CONFIG_LANGUAGE": "Jazyk",
@@ -949,7 +974,7 @@
       "APP_MESSAGE_CONTACT_TITLE": "kontakty",
       "APP_MESSAGE_CONTRACT_ENTER_NUMBER": "Zadej číslo",
       "APP_MESSAGE_PLACEHOLDER_ENTER_MESSAGE": "Odeslat zprávu",
-      "APP_DARKTCHAT_TITLE": "Dark Chat",
+      "APP_DARKTCHAT_TITLE": "Reddit",
       "APP_DARKTCHAT_NEW_CHANNEL": "Přidat kanál",
       "APP_DARKTCHAT_DELETE_CHANNEL": "Delete the channel",
       "APP_DARKTCHAT_CANCEL": "zrušit",

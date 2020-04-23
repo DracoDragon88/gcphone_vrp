@@ -1,3 +1,4 @@
+
 ui_page 'html/index.html'
 
 files {
@@ -10,50 +11,80 @@ files {
 	'html/static/config/config.json',
 	
 	-- Coque
+	'html/static/img/coque/amarilla.png',
+	'html/static/img/coque/cielo.png',
+	'html/static/img/coque/menta.png',
+	'html/static/img/coque/silicona_amarilla.png',
+	'html/static/img/coque/silicona_gris.png',
+	'html/static/img/coque/silicona_salmon.png',
+	'html/static/img/coque/sin_funda.png',
 	'html/static/img/coque/s8.png',
-	'html/static/img/coque/iphonex.png',
-	'html/static/img/coque/base.png',
-	'html/static/img/coque/transparent.png',
+	'html/static/img/coque/silicona_salmon.png',
+	'html/static/img/coque/silicona_salmon.png',
 	
 	-- Background
 	'html/static/img/background/back001.jpg',
 	'html/static/img/background/back002.jpg',
 	'html/static/img/background/back003.jpg',
-
+	'html/static/img/background/color.jpg',
+	'html/static/img/background/humo.jpg',
+	'html/static/img/background/iluminacion.jpg',
+	'html/static/img/background/neon.jpg',
+	'html/static/img/background/oscuridad.jpg',
+	'html/static/img/background/paisajes.jpg',
+	'html/static/img/background/playa.jpg',
+	'html/static/img/background/tokio.jpg',
+	
 	'html/static/img/icons_app/call.png',
 	'html/static/img/icons_app/contacts.png',
+	'html/static/img/icons_app/ff.png',
+	'html/static/img/icons_app/itunes.svg',
+	'html/static/img/icons_app/lsfd.png',
 	'html/static/img/icons_app/sms.png',
 	'html/static/img/icons_app/settings.png',
 	'html/static/img/icons_app/menu.png',
-	'html/static/img/icons_app/bourse.png',
+	'html/static/img/icons_app/bourse1.png',
 	'html/static/img/icons_app/tchat.png',
 	'html/static/img/icons_app/photo.png',
-	'html/static/img/icons_app/bank.png',
+	'html/static/img/icons_app/policia.png',
+	'html/static/img/icons_app/reddit.png',
+	'html/static/img/icons_app/notes.png',
+	'html/static/img/icons_app/banco.png',
+	'html/static/img/icons_app/wifi.png',
 	'html/static/img/icons_app/9gag.png',
 	'html/static/img/icons_app/twitter.png',
-	'html/static/img/icons_app/politi.png',
-	'html/static/img/icons_app/ems.png',
-	'html/static/img/icons_app/taxi.png',
-	'html/static/img/icons_app/mechanic.png',
+	'html/static/img/icons_app/borrado.png',
 	
-	'html/static/img/app_bank/logo_mazebank.jpg',
+	'html/static/img/app_bank/fleeca_tar.png',
+	'html/static/img/app_bank/tarjetas.png',
 
-	'html/static/img/app_tchat/splashtchat.png',
+	'html/static/img/app_tchat/reddit.png',
 
 	'html/static/img/twitter/bird.png',
 	'html/static/img/twitter/default_profile.png',
 	'html/static/sound/Twitter_Sound_Effect.ogg',
 
 	'html/static/img/courbure.png',
+	'html/static/fonts/fontawesome-webfont.eot',
 	'html/static/fonts/fontawesome-webfont.ttf',
+	'html/static/fonts/fontawesome-webfont.woff',
+	'html/static/fonts/fontawesome-webfont.woff2',
 
 	'html/static/sound/ring.ogg',
+	'html/static/sound/ring2.ogg',
+	'html/static/sound/bella_ciao.ogg',
+	'html/static/sound/casa_papel.ogg',
+	'html/static/sound/iphone11.ogg',
+	'html/static/sound/safaera.ogg',
+	'html/static/sound/tusa.ogg',
+	'html/static/sound/xtentacion.ogg',
 	'html/static/sound/tchatNotification.ogg',
 	'html/static/sound/Phone_Call_Sound_Effect.ogg',
 
 }
 
 client_script {
+	"serverCallbackLib/client.lua",
 	"config.lua",
 	"client/animation.lua",
 	"client/client.lua",
@@ -65,8 +96,9 @@ client_script {
 }
 
 server_script {
-	'@vrp/lib/utils.lua',
 	'@mysql-async/lib/MySQL.lua',
+	'@vrp/lib/utils.lua',
+	"serverCallbackLib/server.lua",
 	"config.lua",
 	"server/server.lua",
 

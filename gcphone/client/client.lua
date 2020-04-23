@@ -11,12 +11,11 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 289 -- F2
+local KeyOpenClose = 288 -- F2
 local KeyTakeCall = 38 -- E
-local useAPhone = true -- true = check for phorne item, false = open phone with out
+local useAPhone = false -- Check for phone item
+local voip_engine = "mumble-voip" -- mumble-voip or tokovoip_script
 
---====================================================================================
---  
 --====================================================================================
 local menuIsOpen = false
 local contacts = {}
@@ -27,24 +26,73 @@ local USE_RTC = false
 local useMouse = false
 local ignoreFocus = false
 local takePhoto = false
-local lastFrameIsOpen = false
+local hasFocus = false
+local TokoVoipID = nil
 
 local PhoneInCall = {}
 local currentPlaySound = false
-local soundId = 1485
+local soundDistanceMax = 8.0
 
+
+--====================================================================================
+--  Check si le joueurs poséde un téléphone
+--  Callback true or false
+--====================================================================================
+function hasPhone (cb)
+  if useAPhone then
+    draCB.TriggerServerCallback('disc-mdt:setBolo', function(done)
+      cb(done)
+    end)
+  else
+    cb(true)
+  end
+end
+--====================================================================================
+--  Que faire si le joueurs veut ouvrir sont téléphone n'est qu'il en a pas ?
+--====================================================================================
+function ShowNoPhoneWarning ()
+end
+
+--[[
+  Ouverture du téphone lié a un item
+  Un solution ESC basé sur la solution donnée par HalCroves
+  https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
+
+ESX = nil
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+  end
+end)
+
+function hasPhone (cb)
+  if (ESX == nil) then return cb(0) end
+  ESX.TriggerServerCallback('gcphone:getItemAmount', function(qtty)
+    cb(qtty > 0)
+  end, 'phone')
+end
+function ShowNoPhoneWarning () 
+  if (ESX == nil) then return end
+  ESX.ShowNotification("Vous n'avez pas de ~r~téléphone~s~")
+end --]] 
+
+
+--====================================================================================
+--  
+--====================================================================================
 Citizen.CreateThread(function()
   while true do
     Citizen.Wait(0)
     if takePhoto ~= true then
       if IsControlJustPressed(1, KeyOpenClose) then
-        if menuIsOpen == false then
-          if useAPhone then
-            TriggerServerEvent('gcPhone:doIhaveAphone')
-          else
+        hasPhone(function (hasPhone)
+          if hasPhone == true then
             TooglePhone()
+          else
+            ShowNoPhoneWarning()
           end
-        end
+        end)
       end
       if menuIsOpen == true then
         for _, value in ipairs(KeyToucheCloseEvent) do
@@ -52,25 +100,25 @@ Citizen.CreateThread(function()
             SendNUIMessage({keyUp = value.event})
           end
         end
-        local nuiFocus = useMouse and not ignoreFocus
-        SetNuiFocus(nuiFocus, nuiFocus)
-        lastFrameIsOpen = true
-      else
-        if lastFrameIsOpen == true then
+        if useMouse == true and hasFocus == ignoreFocus then
+          local nuiFocus = not hasFocus
+          SetNuiFocus(nuiFocus, nuiFocus)
+          hasFocus = nuiFocus
+        elseif useMouse == false and hasFocus == true then
           SetNuiFocus(false, false)
-          lastFrameIsOpen = false
+          hasFocus = false
+        end
+      else
+        if hasFocus == true then
+          SetNuiFocus(false, false)
+          hasFocus = false
         end
       end
     end
   end
 end)
 
-RegisterNetEvent("gcPhone:OpenPhone")
-AddEventHandler("gcPhone:OpenPhone", function(_myPhoneNumber)
-  if menuIsOpen == false then
-    TooglePhone()
-  end
-end)
+
 
 --====================================================================================
 --  Active ou Deactive une application (appName => config.json)
@@ -132,18 +180,21 @@ end
  
 
 Citizen.CreateThread(function ()
+  local mod = 0
   while true do 
     local playerPed   = PlayerPedId()
     local coords      = GetEntityCoords(playerPed)
     local inRangeToActivePhone = false
+    local inRangedist = 0
     for i, _ in pairs(PhoneInCall) do 
         local dist = GetDistanceBetweenCoords(
           PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
           coords.x, coords.y, coords.z, 1)
-        if (dist <= 5.0) then
+        if (dist <= soundDistanceMax) then
           DrawMarker(1, PhoneInCall[i].coords.x, PhoneInCall[i].coords.y, PhoneInCall[i].coords.z,
               0,0,0, 0,0,0, 0.1,0.1,0.1, 0,255,0,255, 0,0,0,0,0,0,0)
           inRangeToActivePhone = true
+          inRangedist = dist
           if (dist <= 1.5) then 
             SetTextComponentFormat("STRING")
             AddTextComponentString("~INPUT_PICKUP~ Detach")
@@ -152,7 +203,7 @@ Citizen.CreateThread(function ()
               PhonePlayCall(true)
               TakeAppel(PhoneInCall[i])
               PhoneInCall = {}
-              StopSound(soundId)
+              StopSoundJS('ring2.ogg')
             end
           end
           break
@@ -162,17 +213,34 @@ Citizen.CreateThread(function ()
       showFixePhoneHelper(coords)
     end
     if inRangeToActivePhone == true and currentPlaySound == false then
-      PlaySound(soundId, "Remote_Ring", "Phone_SoundSet_Michael", 0, 0, 1)
+      PlaySoundJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
       currentPlaySound = true
+    elseif inRangeToActivePhone == true then
+      mod = mod + 1
+      if (mod == 15) then
+        mod = 0
+        SetSoundVolumeJS('ring2.ogg', 0.2 + (inRangedist - soundDistanceMax) / -soundDistanceMax * 0.8 )
+      end
     elseif inRangeToActivePhone == false and currentPlaySound == true then
       currentPlaySound = false
-      StopSound(soundId)
+      StopSoundJS('ring2.ogg')
     end
     Citizen.Wait(0)
   end
 end)
 
 
+function PlaySoundJS (sound, volume)
+  SendNUIMessage({ event = 'playSound', sound = sound, volume = volume })
+end
+
+function SetSoundVolumeJS (sound, volume)
+  SendNUIMessage({ event = 'setSoundVolume', sound = sound, volume = volume})
+end
+
+function StopSoundJS (sound)
+  SendNUIMessage({ event = 'stopSound', sound = sound})
+end
 
 
 
@@ -224,12 +292,12 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
   SendNUIMessage({event = 'newMessage', message = message})
   table.insert(messages, message)
   if message.owner == 0 then
-    local text = '~o~New message'
+    local text = '~o~Nouveau message'
     if ShowNumberNotification == true then
-      text = '~o~New message from ~y~'.. message.transmitter
+      text = '~o~Nouveau message du ~y~'.. message.transmitter
       for _,contact in pairs(contacts) do
         if contact.number == message.transmitter then
-          text = '~o~New message from ~g~'.. contact.display
+          text = '~o~Nouveau message de ~g~'.. contact.display
           break
         end
       end
@@ -321,8 +389,10 @@ RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
   if inCall == false and USE_RTC == false then
     inCall = true
-    NetworkSetVoiceChannel(infoCall.id + 1)
-    NetworkSetTalkerProximity(0.0)
+    -- NetworkSetVoiceChannel(infoCall.id + 1)
+    -- NetworkSetTalkerProximity(0.0)
+    exports[voip_engine]:addPlayerToCall(infoCall.id + 120)
+    TokoVoipID = infoCall.id + 120
   end
   if menuIsOpen == false then 
     TooglePhone()
@@ -336,7 +406,9 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
     Citizen.InvokeNative(0xE036A705F989E049)
-    NetworkSetTalkerProximity(2.5)
+    -- NetworkSetTalkerProximity(2.5)
+    exports[voip_engine]:removePlayerFromCall(TokoVoipID)
+    TokoVoipID = nil
   end
   PhonePlayText()
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
@@ -404,10 +476,11 @@ end)
 RegisterNUICallback('notififyUseRTC', function (use, cb)
   USE_RTC = use
   if USE_RTC == true and inCall == true then
-    print('USE RTC ON')
     inCall = false
     Citizen.InvokeNative(0xE036A705F989E049)
-    NetworkSetTalkerProximity(2.5)
+    -- NetworkSetTalkerProximity(2.5)
+    exports[voip_engine]:removePlayerFromCall(TokoVoipID)
+    TokoVoipID = nil
   end
   cb()
 end)
@@ -674,11 +747,14 @@ end)
 RegisterNUICallback('takePhoto', function(data, cb)
 	CreateMobilePhone(1)
   CellCamActivate(true, true)
-  print(json.encode(data))
   takePhoto = true
+  Citizen.Wait(0)
+  if hasFocus == true then
+    SetNuiFocus(false, false)
+    hasFocus = false
+  end
 	while takePhoto do
     Citizen.Wait(0)
-    SetNuiFocus(false, false)
 
 		if IsControlJustPressed(1, 27) then -- Toogle Mode
 			frontCam = not frontCam
@@ -694,9 +770,7 @@ RegisterNUICallback('takePhoto', function(data, cb)
         local resp = json.decode(data)
         DestroyMobilePhone()
         CellCamActivate(false, false)
-        print(json.encode(resp))
-        cb(json.encode({ url = resp.files[1].url }))
-        
+        --cb(json.encode({ url = resp.files[1].url }))   
       end)
       takePhoto = false
 		end

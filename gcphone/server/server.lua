@@ -4,27 +4,52 @@ local Proxy = module("vrp", "lib/Proxy")
 vRP = Proxy.getInterface("vRP")
 vRPclient = Tunnel.getInterface("vRP", "gcPhone")
 
-RegisterServerEvent('gcPhone:doIhaveAphone')
-AddEventHandler('gcPhone:doIhaveAphone', function()
+math.randomseed(os.time()) 
+
+draCB.RegisterServerCallback('gcPhone:hasPhone', function(source, cb, data)
     local user_id = vRP.getUserId({source})
     if vRP.getInventoryItemAmount({user_id,"aphone"}) > 0 then
-        TriggerClientEvent('gcPhone:OpenPhone',source)
+        cb(true)
     else
-        vRPclient.notify(source,{"Ingen Mobil"})
+        cb(false)
     end
 end)
 
---====================================================================================
--- #Author: Jonathan D @Gannon
--- #Version 2.0
---====================================================================================
-
-math.randomseed(os.time()) 
+--- Pour les numero du style XXX-XXXX
+function getPhoneRandomNumber()
+    local numBase0 = math.random(100,999)
+    local numBase1 = math.random(0,9999)
+    local num = string.format("%03d-%04d", numBase0, numBase1 )
+	return num
+end
 
 --- Exemple pour les numero du style 06XXXXXXXX
-function getPhoneRandomNumber()
-    return math.random(20000000,29999999)
-end
+-- function getPhoneRandomNumber()
+--     return '0' .. math.random(600000000,699999999)
+-- end
+
+
+--[[
+  Ouverture du téphone lié a un item
+  Un solution ESC basé sur la solution donnée par HalCroves
+  https://forum.fivem.net/t/tutorial-for-gcphone-with-call-and-job-message-other/177904
+ 
+local ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) 
+    ESX = obj 
+    ESX.RegisterServerCallback('gcphone:getItemAmount', function(source, cb, item)
+        print('gcphone:getItemAmount call item : ' .. item)
+        local xPlayer = ESX.GetPlayerFromId(source)
+        local items = xPlayer.getInventoryItem(item)
+        if items == nil then
+            cb(0)
+        else
+            cb(items.count)
+        end
+    end)
+end) --]] 
+
+
 
 --====================================================================================
 --  Utils
@@ -366,13 +391,11 @@ AddEventHandler('gcPhone:internal_startCall', function(source, phone_number, rtc
     local srcIdentifier = getPlayerID(source)
 
     local srcPhone = ''
-    print(json.encode(extraData))
     if extraData ~= nil and extraData.useNumber ~= nil then
         srcPhone = extraData.useNumber
     else
         srcPhone = getNumberPhone(srcIdentifier)
     end
-    print('CALL WITH NUMBER ' .. srcPhone)
     local destPlayer = getIdentifierByPhoneNumber(phone_number)
     local is_valid = destPlayer ~= nil and destPlayer ~= srcIdentifier
     AppelsEnCours[indexCall] = {
@@ -444,9 +467,9 @@ AddEventHandler('gcPhone:acceptCall', function(infoCall, rtcAnswer)
             AppelsEnCours[id].is_accepts = true
             AppelsEnCours[id].rtcAnswer = rtcAnswer
             TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id], true)
-            SetTimeout(1000, function() -- change to +1000, if necessary.
-                TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
-            end)
+	    SetTimeout(1000, function() -- change to +1000, if necessary.
+       		TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
+	    end)
             saveAppels(AppelsEnCours[id])
         end
     end
@@ -555,6 +578,8 @@ AddEventHandler("vRP:playerSpawn",function(user_id, source, first_spawn)
         TriggerClientEvent("gcPhone:contactList", sourcePlayer, getContacts(identifier))
         TriggerClientEvent("gcPhone:allMessage", sourcePlayer, getMessages(identifier))
     end)
+    local bankM = vRP.getBankMoney({user_id})
+    TriggerClientEvent('gcphone:setAccountMoney',source,bankM)
 end)
 
 -- Just For reload
@@ -572,7 +597,7 @@ end)
 
 
 AddEventHandler('onMySQLReady', function ()
-    MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
+    -- MySQL.Async.fetchAll("DELETE FROM phone_messages WHERE (DATEDIFF(CURRENT_DATE,time) > 10)")
 end)
 
 --====================================================================================
@@ -679,9 +704,9 @@ function onAcceptFixePhone(source, infoCall, rtcAnswer)
         PhoneFixeInfo[id] = nil
         TriggerClientEvent('gcPhone:notifyFixePhoneChange', -1, PhoneFixeInfo)
         TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].transmitter_src, AppelsEnCours[id], true)
-        SetTimeout(1000, function() -- change to +1000, if necessary.
-            TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
-        end)
+	SetTimeout(1000, function() -- change to +1000, if necessary.
+       		TriggerClientEvent('gcPhone:acceptCall', AppelsEnCours[id].receiver_src, AppelsEnCours[id], false)
+	end)
         saveAppels(AppelsEnCours[id])
     end
 end
