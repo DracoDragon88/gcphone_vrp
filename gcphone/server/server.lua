@@ -1,8 +1,9 @@
 local Tunnel = module("vrp", "lib/Tunnel")
 local Proxy = module("vrp", "lib/Proxy")
+local htmlEntities = module("lib/htmlEntities")
 
 vRP = Proxy.getInterface("vRP")
-vRPclient = Tunnel.getInterface("vRP", "gcPhone")
+vRPclient = Tunnel.getInterface("vRP", "gcphone")
 
 math.randomseed(os.time()) 
 
@@ -16,17 +17,17 @@ draCB.RegisterServerCallback('gcPhone:hasPhone', function(source, cb, data)
 end)
 
 --- Pour les numero du style XXX-XXXX
-function getPhoneRandomNumber()
-    local numBase0 = math.random(100,999)
-    local numBase1 = math.random(0,9999)
-    local num = string.format("%03d-%04d", numBase0, numBase1 )
-	return num
-end
+-- function getPhoneRandomNumber()
+--     local numBase0 = math.random(100,999)
+--     local numBase1 = math.random(0,9999)
+--     local num = string.format("%03d-%04d", numBase0, numBase1 )
+-- 	return num
+-- end
 
 --- Exemple pour les numero du style 06XXXXXXXX
--- function getPhoneRandomNumber()
---     return '0' .. math.random(600000000,699999999)
--- end
+function getPhoneRandomNumber()
+    return '0' .. math.random(600000000,699999999)
+end
 
 
 --[[
@@ -603,34 +604,87 @@ end)
 --====================================================================================
 --  App bourse
 --====================================================================================
+Citizen.CreateThread(function()
+    local second = 1000
+    local minute = 60 * second
+    local hour = 60 * minute
+    while true do
+        Citizen.Wait(math.ceil(StockUpdateTime * hour))
+        TriggerServerEvent("gcPhone:GeneratePrices")
+    end
+end)
+
 function getBourse()
-    --  Format
-    --  Array 
-    --    Object
-    --      -- libelle type String    | Nom
-    --      -- price type number      | Prix actuelle
-    --      -- difference type number | Evolution 
-    -- 
-    -- local result = MySQL.Sync.fetchAll("SELECT * FROM `recolt` LEFT JOIN `items` ON items.`id` = recolt.`treated_id` WHERE fluctuation = 1 ORDER BY price DESC",{})
-    local result = {
-        {
-            libelle = 'Google',
-            price = 125.2,
-            difference =  -12.1
-        },
-        {
-            libelle = 'Microsoft',
-            price = 132.2,
-            difference = 3.1
-        },
-        {
-            libelle = 'Amazon',
-            price = 120,
-            difference = 0
-        }
-    }
-    return result
+    
+    name = {}
+    price = {}
+    middle = {}
+    difference = {}
+
+    local result = MySQL.Sync.fetchAll("SELECT * FROM phone_stocks",{})
+
+    -- local qnt = #result
+    -- for i=1, qnt, 1 do
+    --     name[i] = result[i].Label
+    --     price[i] = result[i].Current
+    --     middle[i] = result[i].Med
+
+    --     difference[i] = price[i] - middle[i]
+    -- end
+
+    local stocks = {}
+
+    for k,v in pairs(result) do
+        local difference = v.Current - v.Med
+        table.insert(stocks, {libelle = v.Label, price = v.Current, difference = difference})
+    end
+    -- for i=1, qnt, 1 do
+    --     local line = {libelle = name[i], price = price[i], difference = difference[i]}
+    --     table.insert(stocks, line)
+    -- end
+    return stocks
 end
+
+-- RegisterServerEvent('gcPhone:GeneratePrices')
+AddEventHandler('gcPhone:GeneratePrices', function()
+
+    MySQL.Async.fetchAll('SELECT * FROM phone_stocks', {}, function(result)
+
+        for i=1, #result, 1 do
+
+            local id = result[i].ID
+
+            local nome = result[i].Name
+            local attuale = result[i].Current
+            local min = result[i].Min
+            local max = result[i].Max
+            local med = result[i].Med
+    
+            local med = ((min + max) / 2)
+
+            local rnd = math.random(min, max)
+    
+            MySQL.Async.execute('UPDATE phone_stocks SET Current=@RND , Med=@MED WHERE ID=@ID',{
+                ['@RND'] = rnd,
+                ['@MED'] = med,
+                ['@ID'] = id
+            })
+        end
+
+    end)
+
+    local stocks = getBourse()
+    TriggerClientEvent('gcPhone:getBourse', -1, stocks)
+
+end)
+
+draCB.RegisterServerCallback('gcPhone:getStocks', function(source, name, cb)
+    local Name = name
+    MySQL.Async.fetchAll('SELECT * FROM phone_stocks WHERE Name=@Name', {['@Name'] = Name}, function(result)
+        local stock = result[1].Current
+        cb(stock)
+    end)
+end)
 
 --====================================================================================
 --  App ... WIP
@@ -722,3 +776,76 @@ function onRejectFixePhone(source, infoCall, rtcAnswer)
     AppelsEnCours[id] = nil
     
 end
+
+RegisterServerEvent('gcPhone:moneyTransfer')
+AddEventHandler('gcPhone:moneyTransfer', function(num, amount)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_identities WHERE phone = @Number", {['@Number'] = num})
+    local nuser_id = nil
+    if #result > 0 then nuser_id = tonumber(result[1].user_id) else vRPclient.notify(source,{"No Mobil Pay on this number ("..num..")"}); return end
+
+    local nplayer = vRP.getUserSource({nuser_id})
+    if nplayer ~= nil then
+        local user_id = vRP.getUserId({source})
+        local player = vRP.getUserSource({user_id})
+
+        if tonumber(player) == tonumber(nplayer) then
+            TriggerClientEvent("pNotify:SendNotification", player,{text = "Du kan ikke overføre penge til dig selv.", type = "error", queue = "global", timeout = 4000, layout = "centerLeft",animation = {open = "gta_effects_fade_in", close = "gta_effects_fade_out"}})
+            CancelEvent()
+        else
+            local result2 = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_identities WHERE user_id = @user_id", {['@user_id'] = user_id})[1]
+            local identity = htmlEntities.encode(result2.firstname).." "..htmlEntities.encode(result2.name)
+            local nidentity = htmlEntities.encode(result[1].firstname).." "..htmlEntities.encode(result[1].name)
+
+            local rounded = math.floor(tonumber(amount))
+            if(string.len(rounded) >= 9) then
+                TriggerClientEvent("pNotify:SendNotification", source,{text = "Beløbet er for højt.", type = "error", queue = "global", timeout = 4000, layout = "centerLeft",animation = {open = "gta_effects_fade_in", close = "gta_effects_fade_out"}})
+                CancelEvent()
+            else
+                vRP.request({player,"Ønsker du at overføre "..rounded.." til "..nidentity.."?",30,function(player,ok)
+                    if ok then
+                        local bankbalance = vRP.getBankMoney({user_id})
+                        local newbalance = bankbalance - rounded
+                        if(rounded <= bankbalance)then
+                            local bankbalance2 = vRP.getBankMoney({nuser_id})
+                            local newbalance2 = bankbalance2 + rounded
+
+                            local new_balance = bankbalance - amount
+                            local new_balance2 = bankbalance2 + amount
+
+                            vRP.setBankMoney({user_id, new_balance})
+                            vRP.setBankMoney({nuser_id, new_balance2})
+
+                            local wallet = vRP.getMoney({user_id})
+                            local wallet2 = vRP.getMoney({nuser_id})
+                            TriggerClientEvent("banking:updateBalance", player, new_balance, wallet)
+                            TriggerClientEvent("banking:updateBalance", nplayer, new_balance2, wallet2)
+
+                            TriggerClientEvent("pNotify:SendNotification", player,{
+                                text = "Overførte: "..rounded.." DKK til "..nidentity..".",
+                                type = "success",
+                                timeout = 4000
+                            })
+                            TriggerClientEvent("pNotify:SendNotification", nplayer,{
+                                text = "Modtog: "..rounded.." DKK fra "..identity..".",
+                                type = "success",
+                                timeout = 4000
+                            })
+
+                            CancelEvent()
+                        else
+                            TriggerClientEvent("pNotify:SendNotification", player,{text = "Du har ikke nok penge på kontoen.", type = "error", queue = "global", timeout = 4000, layout = "centerLeft",animation = {open = "gta_effects_fade_in", close = "gta_effects_fade_out"}})
+                        end
+                    else
+                        TriggerClientEvent("pNotify:SendNotification", player,{text = "Du har annuleret.", type = "error", queue = "global", timeout = 4000, layout = "centerLeft",animation = {open = "gta_effects_fade_in", close = "gta_effects_fade_out"}})
+                    end
+                end})
+            end
+        end
+    else
+        TriggerClientEvent("pNotify:SendNotification", nplayer,{
+            text = "Denne konto er ikke tilgænglig lige nu.",
+            type = "error",
+            timeout = 4000
+        })
+    end
+end)

@@ -60,6 +60,7 @@
     "value": "back003.jpg"
   },
 
+
   "coque": {
     "Gray case": "silicona_gris.png",
     "Salmon cover": "silicona_salmon.png",
@@ -92,14 +93,16 @@
   },
 
 
-  "serviceCall": [{
+  "serviceCall": [
+    {
       "display": "Police",
-      "icon": "/html/static/img/icons_app/policia.png",
-      "subMenu": [{
-          "title": "Send en besked",
+      "icon": "/html/static/img/icons_services/police.png",
+      "subMenu": [
+        {
+          "title": "Send a message",
           "eventName": "vrp_addons_gcphone:call",
           "type": {
-            "number": "police"
+            "number": "Police"
           }
         },
         {
@@ -113,28 +116,82 @@
     },
     {
       "display": "Ambulance",
-      "backgroundColor": "red",
-      "icon": "/html/static/img/icons_app/lsfd.png",
-      "subMenu": [{
-        "title": "Send a message",
-        "eventName": "vrp_addons_gcphone:call",
-        "type": {
-          "number": "ambulance"
+      "icon": "/html/static/img/icons_services/ems.png",
+      "subMenu": [
+        {
+          "title": "Send a message",
+          "eventName": "vrp_addons_gcphone:call",
+          "type": {
+            "number": "Ambulance"
+          }
         }
-      }]
+      ]
+    },
+    {
+      "display": "Lawyer",
+      "backgroundColor": "green",
+      "subMenu": [
+        {
+          "title": "Send a message",
+          "eventName": "vrp_addons_gcphone:call",
+          "type": {
+            "number": "Lawyer"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Mechanic",
+      "icon": "/html/static/img/icons_services/mechanic.png",
+      "subMenu": [
+        {
+          "title": "Send a message",
+          "eventName": "vrp_addons_gcphone:call",
+          "type": {
+            "number": "Mechanic"
+          }
+        }
+      ]
+    },
+    {
+      "display": "News",
+      "backgroundColor": "red",
+      "subMenu": [
+        {
+          "title": "Send a message",
+          "eventName": "vrp_addons_gcphone:call",
+          "type": {
+            "number": "News"
+          }
+        }
+      ]
+    },
+    {
+      "display": "Taxi",
+      "icon": "/html/static/img/icons_services/taxi.png",
+      "subMenu": [
+        {
+          "title": "Send a message",
+          "eventName": "vrp_addons_gcphone:call",
+          "type": {
+            "number": "Taxi"
+          }
+        }
+      ]
     }
   ],
 
-  "defaultContacts": [{
-      "number": "ambulance",
-      "display": "Ambulancia",
-      "icon": "/html/static/img/icons_app/lsfd.png"
+  "defaultContacts": [
+    {
+      "number": "Ambulance",
+      "display": "Ambulance",
+      "icon": "/html/static/img/icons_services/ems.png"
     },
     {
-      "number": "police",
-      "display": "Policía",
+      "number": "Police",
+      "display": "Police",
       "backgroundColor": "blue",
-      "icon": "/html/static/img/icons_app/policia.png"
+      "icon": "/html/static/img/icons_services/police.png"
     }
   ],
 
@@ -163,8 +220,6 @@
       "routeName": "appels",
       "inHomePage": true
     },
-   
-    
     {
       "name": "Contacts",
       "da_DK__name": "Kontakter",
@@ -264,7 +319,17 @@
       "es_ES__name": "Notas ",
       "routeName": "notes",
       "icons": "/html/static/img/icons_app/notes.png"
-      
+    },
+    {
+      "name": "Calculator",
+      "da_DK__name": "Lommeregner",
+      "fr_FR__name": "Calculator",
+      "en_US__name": "Calculator",
+      "de_DE__name": "Calculator",
+      "pl_PL__name": "Calculator",
+      "es_ES__name": "Calculator",
+      "routeName": "calculator",
+      "icons": "/html/static/img/icons_app/calculadora.png"
     },
     {
       "name": "9GAG",
@@ -291,6 +356,7 @@
       "APP_CONFIG_MOUSE_SUPPORT": "Mus kontrol",
       "APP_CONFIG_RESET": "Formatere",
       "APP_CONFIG_RESET_CONFIRM": "SLET ALT",
+      "APP_CALCULATOR_TITLE": "Lommeregner",
       "APP_PHONE_CALL": "Opkald",
       "APP_PHONE_DELETE": "Slet",
       "APP_PHONE_DELETE_ALL": "Slet alt.",
@@ -304,6 +370,12 @@
       "APP_PHONE_CALL_IGNORE": "Ignorer",
       "APP_PHONE_CALL_ANONYMOUS": "Ring Anonymt",
       "APP_BANK_TITLE": "Bank",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "DKK",
+      "APP_BANK_TO_NUMBER": "Mobil Nummer",
+      "APP_BANK_AMOUNT": "Beløb",
+      "APP_BANK_TRANSFER": "Overfører",
+      "APP_BANK_CANCEL": "Anullere",
       "APP_BOURSE_TITLE": "Børs",
       "APP_CONTACT_TITLE": "Kontaktoplysninger",
       "APP_CONTACT_NEW": "Ny kontakt",
@@ -330,6 +402,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Slet kanalen",
       "APP_DARKTCHAT_CANCEL": "Annuller",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Indtast en besked",
+      "APP_NOTES_TITLE": "Noter",
+      "APP_NOTES_NEW": "Ny Note",
+      "APP_NOTES_DELETE": "Slet Note",
+      "APP_NOTES_CANCEL": "Annuller",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "Top tweets",
@@ -441,6 +517,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Effacer le channel",
       "APP_DARKTCHAT_CANCEL": "Annuler",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Entrer un message",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "Top Tweets",
@@ -519,14 +599,17 @@
       "APP_PHONE_MENU_RECENTS": "Newest",
       "APP_PHONE_MENU_CONTACTS": "contacts",
       "APP_PHONE_ENTER_NUMBER": "Enter a number",
-      "APP_PHONE_NUMBER_HIDDEN": "Hidden",
-      "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
-      "APP_PHONE_CALL_IGNORE": "Ignore",
-      "APP_PHONE_NUMBER_HIDDEN": "Hidden",
+      "APP_PHONE_NUMBER_HIDDEN": "Secret number",
       "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
       "APP_PHONE_CALL_IGNORE": "Ignore",
       "APP_PHONE_CALL_ANONYMOUS": "Call Anonymous",
-      "APP_BANK_TITLE": "bench",
+      "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "$",
+      "APP_BANK_TO_NUMBER": "Phone Number",
+      "APP_BANK_AMOUNT": "Amount",
+      "APP_BANK_TRANSFER": "Transfer",
+      "APP_BANK_CANCEL": "Cancel",
       "APP_BOURSE_TITLE": "stock exchange",
       "APP_CONTACT_TITLE": "contact details",
       "APP_CONTACT_NEW": "New contact",
@@ -553,6 +636,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Delete the channel",
       "APP_DARKTCHAT_CANCEL": "abort",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Enter a message",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "top tweets",
@@ -632,6 +719,14 @@
       "APP_PHONE_NUMBER_HIDDEN": "Nummer unterdrückt",
       "APP_PHONE_NUMBER_UNKNOWN": "Unbekannt",
       "APP_PHONE_CALL_IGNORE": "Ignorieren",
+      "APP_PHONE_CALL_ANONYMOUS": "Call Anonymous",
+      "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "$",
+      "APP_BANK_TO_NUMBER": "Phone Number",
+      "APP_BANK_AMOUNT": "Amount",
+      "APP_BANK_TRANSFER": "Transfer",
+      "APP_BANK_CANCEL": "Cancel",
       "APP_BANK_TITLE": "Bank",
       "APP_BOURSE_TITLE": "Börse",
       "APP_CONTACT_TITLE": "Kontakt",
@@ -662,6 +757,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Channel löschen",
       "APP_DARKTCHAT_CANCEL": "Abbrechen",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Nachricht eingeben",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "Top Tweets",
@@ -738,6 +837,17 @@
       "APP_PHONE_MENU_RECENTS": "Najnowszy",
       "APP_PHONE_MENU_CONTACTS": "styki",
       "APP_PHONE_ENTER_NUMBER": "Wprowadź numer",
+      "APP_PHONE_NUMBER_HIDDEN": "Secret number",
+      "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
+      "APP_PHONE_CALL_IGNORE": "Ignore",
+      "APP_PHONE_CALL_ANONYMOUS": "Call Anonymous",
+      "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "$",
+      "APP_BANK_TO_NUMBER": "Phone Number",
+      "APP_BANK_AMOUNT": "Amount",
+      "APP_BANK_TRANSFER": "Transfer",
+      "APP_BANK_CANCEL": "Cancel",
       "APP_BANK_TITLE": "ławka",
       "APP_BOURSE_TITLE": "giełda",
       "APP_CONTACT_TITLE": "dane kontaktowe",
@@ -765,6 +875,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Usuń kanał",
       "APP_DARKTCHAT_CANCEL": "przerwać",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Wprowadź wiadomość",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "górne tweety",
@@ -842,6 +956,14 @@
       "APP_PHONE_MENU_RECENTS": "Recientes",
       "APP_PHONE_MENU_CONTACTS": "Contactos",
       "APP_PHONE_ENTER_NUMBER": "Introduzca un número",
+      "APP_PHONE_CALL_IGNORE": "Ignore",
+      "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "$",
+      "APP_BANK_TO_NUMBER": "Phone Number",
+      "APP_BANK_AMOUNT": "Amount",
+      "APP_BANK_TRANSFER": "Transfer",
+      "APP_BANK_CANCEL": "Cancel",
       "APP_BANK_TITLE": "Wallet",
       "APP_BOURSE_TITLE": "Bolsa de valores",
       "APP_CONTACT_TITLE": "Contactos",
@@ -873,6 +995,10 @@
       "APP_DARKTCHAT_DELETE_NOTE": "Borrar la nota",
       "APP_DARKTCHAT_CANCEL": "Cancelar",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Escriba un mensaje",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "mejores tweets",
@@ -952,6 +1078,17 @@
       "APP_PHONE_MENU_RECENTS": "Nejnovější",
       "APP_PHONE_MENU_CONTACTS": "kontakty",
       "APP_PHONE_ENTER_NUMBER": "Zadej číslo",
+      "APP_PHONE_NUMBER_HIDDEN": "Secret number",
+      "APP_PHONE_NUMBER_UNKNOWN": "Unknown",
+      "APP_PHONE_CALL_IGNORE": "Ignore",
+      "APP_PHONE_CALL_ANONYMOUS": "Call Anonymous",
+      "APP_CALCULATOR_TITLE": "Calculator",
+      "APP_BANK_SALDO": "Saldo",
+      "APP_BANK_VALUTA": "$",
+      "APP_BANK_TO_NUMBER": "Phone Number",
+      "APP_BANK_AMOUNT": "Amount",
+      "APP_BANK_TRANSFER": "Transfer",
+      "APP_BANK_CANCEL": "Cancel",
       "APP_BANK_TITLE": "banka",
       "APP_BOURSE_TITLE": "burza",
       "APP_CONTACT_TITLE": "detaily kontaktu",
@@ -979,6 +1116,10 @@
       "APP_DARKTCHAT_DELETE_CHANNEL": "Delete the channel",
       "APP_DARKTCHAT_CANCEL": "zrušit",
       "APP_DARKTCHAT_PLACEHOLDER_ENTER_MESSAGE": "Zadej zprávu",
+      "APP_NOTES_TITLE": "Notes",
+      "APP_NOTES_NEW": "New Note",
+      "APP_NOTES_DELETE": "Delete Note",
+      "APP_NOTES_CANCEL": "Cancel",
       "APP_TWITTER_NAME": "Twitter",
       "APP_TWITTER_VIEW_TWITTER": "Twitter",
       "APP_TWITTER_VIEW_TOP_TWEETS": "nejlepší tweety",

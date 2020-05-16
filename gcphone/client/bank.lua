@@ -26,7 +26,7 @@ end)
 --  Transfer Event
 --====================================================================================
 AddEventHandler('gcphone:bankTransfer', function(data)
-  print(json.encode(data))
+  TriggerServerEvent('gcPhone:moneyTransfer', data.id, data.amount)
   -- TriggerServerEvent('bank:transfer', data.id, data.amount)
   -- TriggerServerEvent('bank:balance')
 end)

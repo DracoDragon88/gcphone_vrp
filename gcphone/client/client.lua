@@ -11,11 +11,8 @@ local KeyToucheCloseEvent = {
   { code = 176, event = 'Enter' },
   { code = 177, event = 'Backspace' },
 }
-local KeyOpenClose = 288 -- F2
+local KeyOpenClose = 289 -- F2
 local KeyTakeCall = 38 -- E
-local useAPhone = false -- Check for phone item
-local voip_engine = "mumble-voip" -- mumble-voip or tokovoip_script
-
 --====================================================================================
 local menuIsOpen = false
 local contacts = {}
@@ -40,7 +37,7 @@ local soundDistanceMax = 8.0
 --====================================================================================
 function hasPhone (cb)
   if useAPhone then
-    draCB.TriggerServerCallback('disc-mdt:setBolo', function(done)
+    draCB.TriggerServerCallback('gcPhone:hasPhone', function(done)
       cb(done)
     end)
   else
@@ -51,6 +48,9 @@ end
 --  Que faire si le joueurs veut ouvrir sont téléphone n'est qu'il en a pas ?
 --====================================================================================
 function ShowNoPhoneWarning ()
+  SetNotificationTextEntry("STRING")
+  AddTextComponentString('~o~No Phone')
+  DrawNotification(false, false)
 end
 
 --[[
@@ -292,24 +292,28 @@ AddEventHandler("gcPhone:receiveMessage", function(message)
   SendNUIMessage({event = 'newMessage', message = message})
   table.insert(messages, message)
   if message.owner == 0 then
-    local text = '~o~Nouveau message'
-    if ShowNumberNotification == true then
-      text = '~o~Nouveau message du ~y~'.. message.transmitter
-      for _,contact in pairs(contacts) do
-        if contact.number == message.transmitter then
-          text = '~o~Nouveau message de ~g~'.. contact.display
-          break
+    hasPhone(function (hasPhone)
+      if hasPhone == true then
+        local text = '~o~New  message'
+        if ShowNumberNotification == true then
+          text = '~o~New message from ~y~'.. message.transmitter
+          for _,contact in pairs(contacts) do
+            if contact.number == message.transmitter then
+              text = '~o~New message from ~g~'.. contact.display
+              break
+            end
+          end
         end
+        SetNotificationTextEntry("STRING")
+        AddTextComponentString(text)
+        DrawNotification(false, false)
+        PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+        Citizen.Wait(300)
+        PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+        Citizen.Wait(300)
+        PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
       end
-    end
-    SetNotificationTextEntry("STRING")
-    AddTextComponentString(text)
-    DrawNotification(false, false)
-    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
-    Citizen.Wait(300)
-    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
-    Citizen.Wait(300)
-    PlaySound(-1, "Menu_Accept", "Phone_SoundSet_Default", 0, 0, 1)
+    end)
   end
 end)
 
@@ -376,29 +380,46 @@ local inCall = false
 
 RegisterNetEvent("gcPhone:waitingCall")
 AddEventHandler("gcPhone:waitingCall", function(infoCall, initiator)
-  SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
-  if initiator == true then
+  -- SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
+  if initiator then
+    SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
     PhonePlayCall()
     if menuIsOpen == false then
       TooglePhone()
     end
+  else
+    hasPhone(function (hasPhone)
+      if hasPhone == true then
+        SendNUIMessage({event = 'waitingCall', infoCall = infoCall, initiator = initiator})
+        PhonePlayCall()
+        if menuIsOpen == false then
+          TooglePhone()
+        end
+      else
+        TriggerServerEvent('gcPhone:ignoreCall', infoCall)
+      end
+    end)
   end
 end)
 
 RegisterNetEvent("gcPhone:acceptCall")
 AddEventHandler("gcPhone:acceptCall", function(infoCall, initiator)
-  if inCall == false and USE_RTC == false then
-    inCall = true
-    -- NetworkSetVoiceChannel(infoCall.id + 1)
-    -- NetworkSetTalkerProximity(0.0)
-    exports[voip_engine]:addPlayerToCall(infoCall.id + 120)
-    TokoVoipID = infoCall.id + 120
-  end
-  if menuIsOpen == false then 
-    TooglePhone()
-  end
-  PhonePlayCall()
-  SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
+  hasPhone(function (hasPhone)
+    if hasPhone == true then
+      if inCall == false and USE_RTC == false then
+        inCall = true
+        -- NetworkSetVoiceChannel(infoCall.id + 1)
+        -- NetworkSetTalkerProximity(0.0)
+        exports[voip_engine]:addPlayerToCall(infoCall.id + 120)
+        TokoVoipID = infoCall.id + 120
+      end
+      if menuIsOpen == false then
+        TooglePhone()
+      end
+      PhonePlayCall()
+      SendNUIMessage({event = 'acceptCall', infoCall = infoCall, initiator = initiator})
+    end
+  end)
 end)
 
 RegisterNetEvent("gcPhone:rejectCall")
@@ -410,7 +431,11 @@ AddEventHandler("gcPhone:rejectCall", function(infoCall)
     exports[voip_engine]:removePlayerFromCall(TokoVoipID)
     TokoVoipID = nil
   end
-  PhonePlayText()
+  hasPhone(function (hasPhone)
+    if hasPhone == true then
+      PhonePlayText()
+    end
+  end)
   SendNUIMessage({event = 'rejectCall', infoCall = infoCall})
 end)
 

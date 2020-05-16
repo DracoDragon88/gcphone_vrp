@@ -44,3 +44,5 @@ luac.out
 *.x86_64
 *.hex
 
+Thumbs.db
+gcphone/html_old
