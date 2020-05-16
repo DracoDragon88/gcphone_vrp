@@ -22,8 +22,8 @@ GCphone Converted to VRP 0.5/1.0
 
 ---
 ## Requirements
-MySql-Async 3.1.1 or later
-TokoVOIP or Mumble-VOIP
+* MySql-Async 3.1.1 or later
+* TokoVOIP or Mumble-VOIP
 
 ---
 # Installing
