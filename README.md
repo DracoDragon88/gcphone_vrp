@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/badge/Version-3.0_DEV-yellow)](https://github.com/DracoDragon88/gcphone_vrp)
+[![Version](https://img.shields.io/badge/Version-3.0-yellow)](https://github.com/DracoDragon88/gcphone_vrp)
 # GCphone_VRP
 GCphone Converted to VRP 0.5/1.0
 
@@ -6,7 +6,7 @@ GCphone Converted to VRP 0.5/1.0
 ## Links
 * [Original git](https://github.com/N3MTV/gcphone)
 * [GCPhone v3 git](https://github.com/manueljlz/gcphone)
-* [FiveM MySql-Async 3.1.1](https://github.com/brouznouf/fivem-mysql-async)
+* [FiveM MySql-Async](https://github.com/brouznouf/fivem-mysql-async)
 * [Mumble-VOIP](https://github.com/FrazzIe/mumble-voip)
 * [TokoVOIP](https://github.com/Itokoyamato/TokoVOIP_TS3)
 
