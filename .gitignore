@@ -46,3 +46,6 @@ luac.out
 
 Thumbs.db
 gcphone/html_old
+gcphone/html_k
+src_htmlPhone
+src_htmlPhone/node_modules

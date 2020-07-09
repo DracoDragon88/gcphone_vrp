@@ -55,11 +55,11 @@
     "Tokio": "tokio.jpg",
     "Custom URL": "URL"
   },
+  
   "background_default": {
     "label": "Santa Monica",
     "value": "back003.jpg"
   },
-
 
   "coque": {
     "Gray case": "silicona_gris.png",
@@ -73,13 +73,13 @@
   },
 
   "sonido": {
-    "Astronomia": "ring.ogg",
-    "Safaera": "safaera.ogg",
-    "Bella Ciao": "bella_ciao.ogg",
-    "Casa Papel": "casa_papel.ogg",
-    "Iphone 11": "iphone_11.ogg",
-    "Tusa": "tusa.ogg",
-    "XXXTentacion": "xtentacion.ogg"
+    "Astronomia": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/ring.ogg",
+    "Safaera": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/safaera.ogg",
+    "Bella Ciao": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/bella_ciao.ogg",
+    "Casa Papel": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/casa_papel.ogg",
+    "Iphone 11": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/iphone_11.ogg",
+    "Tusa": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/tusa.ogg",
+    "XXXTentacion": "https://github.com/DracoDragon88/gcphone_vrp/raw/v3.0/ringtones/xtentacion.ogg"
   },
 
   "coque_default": {

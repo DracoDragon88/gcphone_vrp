@@ -1,3 +1,10 @@
+fx_version "adamant"
+game "gta5"
+
+name "gcPhone"
+description "A Phone for vrp"
+author "Converted by Draco"
+version "3.0"
 
 ui_page 'html/index.html'
 
@@ -56,16 +63,16 @@ files {
 	'html/static/fonts/fontawesome-webfont.woff',
 	'html/static/fonts/fontawesome-webfont.woff2',
 
-	'html/static/sound/ring.ogg',
-	'html/static/sound/ring2.ogg',
-	'html/static/sound/bella_ciao.ogg',
-	'html/static/sound/casa_papel.ogg',
-	'html/static/sound/iphone11.ogg',
-	'html/static/sound/safaera.ogg',
-	'html/static/sound/tusa.ogg',
-	'html/static/sound/xtentacion.ogg',
-	'html/static/sound/tchatNotification.ogg',
-	'html/static/sound/Phone_Call_Sound_Effect.ogg',
+	-- 'html/static/sound/ring.ogg',
+	-- 'html/static/sound/ring2.ogg',
+	-- 'html/static/sound/bella_ciao.ogg',
+	-- 'html/static/sound/casa_papel.ogg',
+	-- 'html/static/sound/iphone11.ogg',
+	-- 'html/static/sound/safaera.ogg',
+	-- 'html/static/sound/tusa.ogg',
+	-- 'html/static/sound/xtentacion.ogg',
+	-- 'html/static/sound/tchatNotification.ogg',
+	-- 'html/static/sound/Phone_Call_Sound_Effect.ogg',
 
 }
 
