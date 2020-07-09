@@ -1,6 +1,11 @@
-resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+fx_version 'adamant'
+game 'common'
 
-version '3.2.0'
+name 'mysql-async'
+description 'MySQL Middleware for lua.'
+author 'Joel Wurtz & Matthias Mandelartz'
+version '3.2.3'
+url 'https://github.com/brouznouf/fivem-mysql-async'
 
 server_script 'mysql-async.js'
 client_script 'mysql-async-client.js'

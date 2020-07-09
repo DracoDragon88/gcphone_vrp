@@ -67,7 +67,7 @@ global.exports('mysql_transaction', (querys, values, callback) => {
 let isReady = false;
 global.exports('is_ready', () => isReady);
 
-global.on('onServerResourceStart', (resourcename) => {
+global.on('onResourceStart', (resourcename) => {
   if (resourcename === 'mysql-async') {
     const trace = global.GetConvarInt('mysql_debug', 0);
     const slowQueryWarningTime = global.GetConvarInt('mysql_slow_query_warning', 200);
@@ -88,6 +88,10 @@ global.on('onServerResourceStart', (resourcename) => {
     }
   }
 });
+
+global.RegisterCommand('mysql:debug', () => {
+  profiler.config.trace = !profiler.config.trace;
+}, true);
 
 global.onNet('mysql-async:request-data', () => {
   if (isReady) {

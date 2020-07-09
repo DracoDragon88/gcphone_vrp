@@ -29,7 +29,7 @@ GCphone Converted to VRP 0.5/1.0
 # Installing
 server.cfg
 ```
-set mysql_connection_string "server=127.0.0.1;database=gta5_gamemode_essential;uid=root;password=1202"
+set mysql_connection_string "server=localhost;uid=mysqluser;password=password;database=fivem;ssl=none"
 
 ensure mysql-async
 ensure tokovoip_script or mumble-voip
@@ -46,12 +46,6 @@ or change the item in `gcphone/server/server.lua:12`
 ---
 ## Make a Service
 `gcphone/html/static/config/config.json:95`
-
-### When using "eventName": "vrp_addons_gcphone:call".
-The number have to be the same as the Service name in `[vrp]/vrp/cfg/phone.lua`
-
-### When using "eventName": "gcphone:autoCallNumber".
-Remember to add the number to the `gcphone/config.lua` in the `FixePhone`
 
 #### Example
 ```
@@ -76,6 +70,12 @@ Remember to add the number to the `gcphone/config.lua` in the `FixePhone`
   ]
 },
 ```
+
+### When using "eventName": "vrp_addons_gcphone:call".
+The number have to be the same as the Service name in `[vrp]/vrp/cfg/phone.lua`
+
+### When using "eventName": "gcphone:autoCallNumber".
+Remember to add the number to the `gcphone/config.lua` in the `FixePhone`
 
 ---
 ## Send a SMS from script

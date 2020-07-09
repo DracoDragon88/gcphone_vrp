@@ -22,8 +22,8 @@ class MySQL {
 
     this.pool.query('SELECT VERSION()', (error, result) => {
       if (!error) {
-        const { versionPrefix, version } = formatVersion(result[0]['VERSION()']);
-        profiler.setVersion(`${versionPrefix}:${version}`);
+        const formattedVersion = formatVersion(result[0]['VERSION()']);
+        profiler.setVersion(formattedVersion);
         logger.log('\x1b[32m[mysql-async]\x1b[0m Database server connection established.');
       } else {
         logger.error(`[ERROR] ${error.message}`);
@@ -60,6 +60,8 @@ class MySQL {
       });
     }).catch((error) => {
       this.logger.error(`[ERROR] [MySQL] [${invokingResource}] An error happens on MySQL for query "${sql.sql}": ${error.message}`);
+      // We should not catch this error when doing a transaction, throw new error instead.
+      if (connection) throw new Error('This error might result from a transaction and be deliberate.');
     });
 
     return queryPromise;
@@ -95,6 +97,9 @@ class MySQL {
       // Otherwise catch the error from the execution
     }).catch((executeError) => {
       this.onTransactionError(executeError, connection, callback);
+    }).then(() => {
+      // terminate connection
+      connection.release();
     });
   }
 }

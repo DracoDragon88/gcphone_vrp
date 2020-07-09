@@ -1,3 +1,5 @@
+const sass = require('sass');
+const fiber = require('fibers');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -59,8 +61,32 @@ const nuiConfig = {
         loader: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
-        test: /\.styl(us)?$/,
-        loader: [MiniCssExtractPlugin.loader, 'css-loader', 'stylus-loader'],
+        test: /\.sass$/,
+        loader: [MiniCssExtractPlugin.loader, 'css-loader', {
+          loader: 'sass-loader',
+          // Requires sass-loader@^8.0.0
+          options: {
+            implementation: sass,
+            sassOptions: {
+              fiber,
+            },
+            prependData: '@import \'@/styles/variables.scss\'',
+          },
+        }],
+      },
+      {
+        test: /\.scss$/,
+        loader: [MiniCssExtractPlugin.loader, 'css-loader', {
+          loader: 'sass-loader',
+          // Requires sass-loader@^8.0.0
+          options: {
+            implementation: sass,
+            sassOptions: {
+              fiber,
+            },
+            prependData: '@import \'@/styles/variables.scss\';',
+          },
+        }],
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
@@ -95,6 +121,11 @@ const nuiConfig = {
     }),
     new VuetifyLoaderPlugin(),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve('ui'),
+    },
+  },
 };
 
 module.exports = [serverConfig, clientConfig, nuiConfig];
