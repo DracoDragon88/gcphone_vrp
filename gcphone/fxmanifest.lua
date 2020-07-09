@@ -55,7 +55,7 @@ files {
 
 	'html/static/img/twitter/bird.png',
 	'html/static/img/twitter/default_profile.png',
-	'html/static/sound/Twitter_Sound_Effect.ogg',
+	'html/static/sound/*.ogg',
 
 	'html/static/img/courbure.png',
 	'html/static/fonts/fontawesome-webfont.eot',
