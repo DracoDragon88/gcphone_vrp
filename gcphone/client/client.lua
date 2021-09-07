@@ -426,7 +426,7 @@ RegisterNetEvent("gcPhone:rejectCall")
 AddEventHandler("gcPhone:rejectCall", function(infoCall)
   if inCall == true then
     inCall = false
-    Citizen.InvokeNative(0xE036A705F989E049)
+    -- Citizen.InvokeNative(0xE036A705F989E049)
     -- NetworkSetTalkerProximity(2.5)
     exports[voip_engine]:removePlayerFromCall(TokoVoipID)
     TokoVoipID = nil
@@ -502,7 +502,7 @@ RegisterNUICallback('notififyUseRTC', function (use, cb)
   USE_RTC = use
   if USE_RTC == true and inCall == true then
     inCall = false
-    Citizen.InvokeNative(0xE036A705F989E049)
+    -- Citizen.InvokeNative(0xE036A705F989E049)
     -- NetworkSetTalkerProximity(2.5)
     exports[voip_engine]:removePlayerFromCall(TokoVoipID)
     TokoVoipID = nil
